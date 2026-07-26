@@ -1,5 +1,6 @@
 import customtkinter
 import json
+import uuid
 THEMES = {
     "dark": {
         "background": "#1A1A2E",
@@ -21,8 +22,19 @@ THEMES = {
 factors_dict = {}
 
 class Task():
-    def __init__(self, task_id, name, tags_list, start_time, due_date, duration, factor_urgency, factor_ambition, status, description):
-        pass
+    def __init__(self, name, tags_list, due_date, duration, factor_urgency, factor_ambition, description):
+        self.task_id = str(uuid.uuid4())
+        self.name = name
+        self.tags_list = tags_list
+        self.due_date = due_date
+        self.duration = duration
+        self.factor_urgency = factor_urgency
+        self.factor_ambition = factor_ambition
+        self.description = description
+        self.status = "active"
+        self.decay_magnitude = 0.00
+
+
 class Routine():
     def __init__(self, name, desc, tags_list, daily_status, recurrence_pattern, description):
         pass
@@ -42,3 +54,5 @@ class Focus_Session():
 class Task_Manager():
     def __init__(self, active_tasks, procrastinated_tasks, completed_tasks):
         pass
+    def create_task(self, name, tags_list, start_time, due_date, duration, factor_urgency, factor_ambition, status, description):
+        
