@@ -50,8 +50,7 @@ class Task():
         return task_dict
     def update_factor_urgency(self, new_val):
         if not isinstance(new_val, int):
-            print(f"Error: Value inputted is not an integer. Data Recieved: {new_val}")
-            return
+            raise TypeError(f"Error: Value inputted is not an integer. Data Recieved: {new_val}")
         
         if new_val>10:
             self._factor_urgency = 10
@@ -74,28 +73,27 @@ class Task():
 
     def update_duration(self, new_val):
         if not isinstance(new_val, int):
-            print(f"Error: Value inputted is not an integer. Data Recieved{new_val}")
-            return
+            raise TypeError(f"Error: Value inputted is not an integer. Data Recieved: {type(new_val)}")
+
 
         if new_val <= 0:
-            print(f"Error: Value inputted must be a non-zero integer. Data Recieved{new_val}")
-            return
+            raise TypeError(f"Error: Value inputted must be a non-zero integer, you inputted: {type(new_val)}")
         else:
             self._duration = new_val
     def update_due_date(self, new_val):
         if not isinstance(new_val, str):
-            print(f"Error: Input Invalid. Please use a string following YYYY-MM-DD format, you inputted: {new_val}")
-            return
+            raise TypeError(f"Error: Input Invalid. Please use a string following YYYY-MM-DD format, you inputted: {new_val}")
         try:
             datetime.strptime(new_val, "%Y-%m-%d")
             self._due_date = new_val
         except ValueError:
-            print(f"Error: Date format invalid. Please use YYYY-MM-DD, you inputted: {new_val}")
+            raise ValueError(f"Error: Date format invalid. Please use YYYY-MM-DD, you inputted: {new_val}")
             
     def update_status(self, new_val):
+        if not isinstance(new_val ,str):
+            raise TypeError(f"Error: Value is not a string, you inputted{type(new_val)}")
         if new_val not in self.VALID_STATUSES:
-            print(f"Error: Value not in list of valid status options, please use on of the following: 'active', 'procrastinated,'completed', You Inputted: {new_val}")
-            return
+            raise ValueError(f"Error: Value not in list of valid status options, please use on of the following: 'active', 'procrastinated,'completed', You Inputted: {new_val}")
         self._status = new_val
 
 
@@ -121,6 +119,8 @@ class Focus_Session():
 class Task_Manager():
     def __init__(self, active_tasks, procrastinated_tasks, completed_tasks):
         pass
-
-task_a = Task("lalala", "", "2025-12-44", 55, 12, 4, "fffff")
-print(task_a.conv_to_dict())
+try:
+    task_a = Task("lalala", "", "2025-12-31", 55, 12, 4, "fffff")
+    print(task_a.conv_to_dict())
+except (TypeError, ValueError) as error:
+    print(f"Task creation blocked: {error}")
