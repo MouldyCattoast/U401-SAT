@@ -28,12 +28,12 @@ class Task():
         self._task_id = str(uuid.uuid4())
         self.name = name
         self.tags_list = tags_list
-        self._due_date = due_date
-        self._duration = duration #Total expected duration required for the task
-        self._factor_urgency = factor_urgency
-        self._factor_ambition = factor_ambition
+        self.update_due_date(due_date)
+        self.update_duration(duration) #Total expected duration required for the task
+        self.update_factor_urgency(factor_urgency)
+        self.update_factor_ambition(factor_ambition)
         self.description = description
-        self._status = "active"
+        self.update_status("active")
 
 
     def conv_to_dict(self):
@@ -91,6 +91,7 @@ class Task():
             self._due_date = new_val
         except ValueError:
             print(f"Error: Date format invalid. Please use YYYY-MM-DD, you inputted: {new_val}")
+            
     def update_status(self, new_val):
         if new_val not in self.VALID_STATUSES:
             print(f"Error: Value not in list of valid status options, please use on of the following: 'active', 'procrastinated,'completed', You Inputted: {new_val}")
@@ -121,6 +122,5 @@ class Task_Manager():
     def __init__(self, active_tasks, procrastinated_tasks, completed_tasks):
         pass
 
-task_a = Task("lalala", ["homework", "life"], "", 55, 5, 4, "fffff")
-task_a.update_status()
+task_a = Task("lalala", "", "2025-12-44", 55, 12, 4, "fffff")
 print(task_a.conv_to_dict())
