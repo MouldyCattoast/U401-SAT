@@ -27,7 +27,7 @@ class Task():
     """Represents the template for what defines a task, all of the details of a task
 
     Attributes:
-        tags_list (lst): The list of tags associated with the task
+        tags (lst): The list of tags associated with the task
         duration (int): The total expected time in minutes the task will take
         factor_urgency and factor_ambition (int): These are two of the "factors" the system uses to calculate the equilibrium score.
             They are about how important a task is, and how ambitious the task being undertaken is respectively.
@@ -36,10 +36,10 @@ class Task():
         status (str): Variable determining whether the task is active, completed, or has been procrastinated
     """
     VALID_STATUSES = ["active", "completed", "procrastinated"] # A list of values accepted as a status
-    def __init__(self, name, tags_list, due_date, duration, factor_urgency, factor_ambition, desc):
+    def __init__(self, name, tags, due_date, duration, factor_urgency, factor_ambition, desc):
 
-        self._tags_list = []
-        for tag in tags_list:
+        self._tags = []
+        for tag in tags:
             self.add_tag(tag)
         self._task_id = str(uuid.uuid4())
         self.name = str(name)
@@ -51,18 +51,24 @@ class Task():
         self.update_status("active")
 
     def add_tag(self, new_tag):
+        """
+        Adds a new tag to the list of tags associated with the task
+        """
         if not isinstance(new_tag, str):
             raise TypeError(f"Error: Tags must be a string. Type Inputted: {type(new_tag)}")
         new_tag = new_tag.strip().lower()
-        if new_tag in self._tags_list:
+        if new_tag in self._tags:
             raise ValueError(f"Error: Tag {new_tag} already exists for the requested task, pleas try a tag that does not yet exist for this task")
-        self._tags_list.append(new_tag)
+        self._tags.append(new_tag)
 
     def remove_tag(self, target_tag):
+        """
+        Removes the specified tag from the list of tags associated with the task
+        """
         if isinstance(target_tag, str):
             target_tag.strip().lower()
-        if target_tag in self._tags_list:
-            self._tags_list.remove(target_tag)
+        if target_tag in self._tags:
+            self._tags.remove(target_tag)
 
 
     def conv_to_dict(self):
@@ -72,7 +78,7 @@ class Task():
         """
         task_dict = {"task_id": self._task_id,
                      "name": self.name,
-                     "tags_list": self._tags_list,
+                     "tags_list": self._tags,
                      "due_date": self._due_date,
                      "duration": self._duration,
                      "factor_urgency": self._factor_urgency,
@@ -147,10 +153,6 @@ class Task():
             raise ValueError(f"Error: Value not in list of valid status options, please use on of the following: 'active', 'procrastinated,'completed', You Inputted: {new_val}")
         self._status = new_val
 
-
-
-        
-        
 class Routine():
     def __init__(self, name, desc, tags_list, daily_status, recurrence_pattern):
        pass
@@ -166,8 +168,23 @@ class Focus_Session():
     def __init__(self, target_task_id, target_duration, total_elapsed_time, legitimate_pause_duration, distraction_pause_duration, session_outcome):
         pass
 class Task_Manager():
-    def __init__(self, active_tasks, procrastinated_tasks, completed_tasks):
-        pass
+    def __init__(self):
+        self._tasks = {}
+        self._routines = {}
+    def add_task(self, task):
+        if not isinstance(task, Task):
+            raise TypeError(f"Error: Attempted to add {type(task)} instead of a task")
+        if task._task_id in self._tasks:
+            raise ValueError(f"Error: Task already in list of tasks")
+        self._tasks[task._task_id] = task
+    def remove_task(self, task):
+        if not isinstance(task, Task):
+            raise TypeError(f"Error: Attempted to remove {type(task)} instead of a task")
+        if task._task_id not in self._tasks:
+            raise ValueError(f"Error: Target task was not found")
+        self._tasks.pop(task._task_id)
+        
+
 try:
     task_a = Task("lalala", ["catty fat", "fatty cat   ", "MEloN"], "2025-12-31", 55, 12, 4, "fffff")
     print(task_a.conv_to_dict())
