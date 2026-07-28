@@ -22,33 +22,71 @@ THEMES = {
 }
 factors_dict = {}
 
+
 class Task():
-    VALID_STATUSES = ["active", "completed", "procrastinated"]
-    def __init__(self, name, tags_list, due_date, duration, factor_urgency, factor_ambition, description):
+    """Represents the template for what defines a task, all of the details of a task
+
+    Attributes:
+        tags_list (lst): The list of tags associated with the task
+        duration (int): The total expected time in minutes the task will take
+        factor_urgency and factor_ambition (int): These are two of the "factors" the system uses to calculate the equilibrium score.
+            They are about how important a task is, and how ambitious the task being undertaken is respectively.
+            They accept values on a fixed integer scale from 1-10.
+            These will be used to determine weighting for the equillibrium algorithm
+        status (str): Variable determining whether the task is active, completed, or has been procrastinated
+    """
+    VALID_STATUSES = ["active", "completed", "procrastinated"] # A list of values accepted as a status
+    def __init__(self, name, tags_list, due_date, duration, factor_urgency, factor_ambition, desc):
+
+        self._tags_list = []
+        for tag in tags_list:
+            self.add_tag(tag)
         self._task_id = str(uuid.uuid4())
-        self.name = name
-        self.tags_list = tags_list
+        self.name = str(name)
         self.update_due_date(due_date)
-        self.update_duration(duration) #Total expected duration required for the task
+        self.update_duration(duration)
         self.update_factor_urgency(factor_urgency)
         self.update_factor_ambition(factor_ambition)
-        self.description = description
+        self.desc = str(desc)
         self.update_status("active")
+
+    def add_tag(self, new_tag):
+        if not isinstance(new_tag, str):
+            raise TypeError(f"Error: Tags must be a string. Type Inputted: {type(new_tag)}")
+        new_tag = new_tag.strip().lower()
+        if new_tag in self._tags_list:
+            raise ValueError(f"Error: Tag {new_tag} already exists for the requested task, pleas try a tag that does not yet exist for this task")
+        self._tags_list.append(new_tag)
+
+    def remove_tag(self, target_tag):
+        if isinstance(target_tag, str):
+            target_tag.strip().lower()
+        if target_tag in self._tags_list:
+            self._tags_list.remove(target_tag)
 
 
     def conv_to_dict(self):
+        """
+        Converts the object into dictionary format, where each attribute is a key.
+        This is for later use regarding data storage
+        """
         task_dict = {"task_id": self._task_id,
                      "name": self.name,
-                     "tags_list": self.tags_list,
+                     "tags_list": self._tags_list,
                      "due_date": self._due_date,
                      "duration": self._duration,
                      "factor_urgency": self._factor_urgency,
                      "factor_ambition": self._factor_ambition,
-                     "description": self.description,
+                     "description": self.desc,
                      "status": self._status,
                      }
         return task_dict
+    
     def update_factor_urgency(self, new_val):
+        """
+        Updates the value of the variable representing the factor of urgency.
+        Accepts integer value in the following range: 1<=n<=10
+        """
         if not isinstance(new_val, int):
             raise TypeError(f"Error: Value inputted is not an integer. Data Recieved: {new_val}")
         
@@ -60,6 +98,10 @@ class Task():
             self._factor_urgency = new_val
 
     def update_factor_ambition(self, new_val):
+            """
+            Updates the value of the variable representing the factor of ambition.
+            Accepts integer value in the following range: 1<=n<=10
+            """
             if not isinstance(new_val, int):
                 print(f"Error: Value inputted is not an integer. Data Recieved: {new_val}")
                 return
@@ -72,6 +114,9 @@ class Task():
                 self._factor_ambition = new_val
 
     def update_duration(self, new_val):
+        """
+        Updates the value representing the total expected duration a task shall take in minutes
+        """
         if not isinstance(new_val, int):
             raise TypeError(f"Error: Value inputted is not an integer. Data Recieved: {type(new_val)}")
 
@@ -81,6 +126,9 @@ class Task():
         else:
             self._duration = new_val
     def update_due_date(self, new_val):
+        """
+        Updates the value representing the date a task is due in the format: YYYY-MM-DD
+        """
         if not isinstance(new_val, str):
             raise TypeError(f"Error: Input Invalid. Please use a string following YYYY-MM-DD format, you inputted: {new_val}")
         try:
@@ -90,6 +138,9 @@ class Task():
             raise ValueError(f"Error: Date format invalid. Please use YYYY-MM-DD, you inputted: {new_val}")
             
     def update_status(self, new_val):
+        """
+        Updates the status of the task, valid options include "active", "procrastinated" and "completed"
+        """
         if not isinstance(new_val ,str):
             raise TypeError(f"Error: Value is not a string, you inputted{type(new_val)}")
         if new_val not in self.VALID_STATUSES:
@@ -101,10 +152,8 @@ class Task():
         
         
 class Routine():
-    def __init__(self, name, desc, tags_list, daily_status, recurrence_pattern, description):
-        pass
-
-class Fixed_Routine(Routine):
+    def __init__(self, name, desc, tags_list, daily_status, recurrence_pattern):
+       pass
     def __init__(self, start_time, end_time):
         pass
 class Flexible_Routine(Routine):
@@ -120,7 +169,7 @@ class Task_Manager():
     def __init__(self, active_tasks, procrastinated_tasks, completed_tasks):
         pass
 try:
-    task_a = Task("lalala", "", "2025-12-31", 55, 12, 4, "fffff")
+    task_a = Task("lalala", ["catty fat", "fatty cat   ", "MEloN"], "2025-12-31", 55, 12, 4, "fffff")
     print(task_a.conv_to_dict())
 except (TypeError, ValueError) as error:
     print(f"Task creation blocked: {error}")
