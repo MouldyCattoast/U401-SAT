@@ -119,39 +119,39 @@ class Task():
             else:
                 self._factor_ambition = new_val
 
-    def update_duration(self, new_val):
+    def update_duration(self, new_duration):
         """
         Updates the value representing the total expected duration a task shall take in minutes
         """
-        if not isinstance(new_val, int):
-            raise TypeError(f"Error: Value inputted is not an integer. Data Recieved: {type(new_val)}")
+        if not isinstance(new_duration, int):
+            raise TypeError(f"Error: Value inputted is not an integer. Data Recieved: {type(new_duration)}")
 
 
-        if new_val <= 0:
-            raise TypeError(f"Error: Value inputted must be a non-zero integer, you inputted: {type(new_val)}")
+        if new_duration <= 0:
+            raise TypeError(f"Error: Value inputted must be a non-zero integer, you inputted: {type(new_duration)}")
         else:
-            self._duration = new_val
-    def update_due_date(self, new_val):
+            self._duration = new_duration
+    def update_due_date(self, new_due_date):
         """
         Updates the value representing the date a task is due in the format: YYYY-MM-DD
         """
-        if not isinstance(new_val, str):
-            raise TypeError(f"Error: Input Invalid. Please use a string following YYYY-MM-DD format, you inputted: {new_val}")
+        if not isinstance(new_due_date, str):
+            raise TypeError(f"Error: Input Invalid. Please use a string following YYYY-MM-DD format, you inputted: {new_due_date}")
         try:
-            datetime.strptime(new_val, "%Y-%m-%d")
-            self._due_date = new_val
+            datetime.strptime(new_due_date, "%Y-%m-%d")
+            self._due_date = new_due_date
         except ValueError:
-            raise ValueError(f"Error: Date format invalid. Please use YYYY-MM-DD, you inputted: {new_val}")
+            raise ValueError(f"Error: Date format invalid. Please use YYYY-MM-DD, you inputted: {new_due_date}")
             
-    def update_status(self, new_val):
+    def update_status(self, new_status):
         """
         Updates the status of the task, valid options include "active", "procrastinated" and "completed"
         """
-        if not isinstance(new_val ,str):
-            raise TypeError(f"Error: Value is not a string, you inputted{type(new_val)}")
-        if new_val not in self.VALID_STATUSES:
-            raise ValueError(f"Error: Value not in list of valid status options, please use on of the following: 'active', 'procrastinated,'completed', You Inputted: {new_val}")
-        self._status = new_val
+        if not isinstance(new_status ,str):
+            raise TypeError(f"Error: Value is not a string, you inputted{type(new_status)}")
+        if new_status not in self.VALID_STATUSES:
+            raise ValueError(f"Error: Value not in list of valid status options, please use on of the following: 'active', 'procrastinated,'completed', You Inputted: {new_status}")
+        self._status = new_status
 
 class Routine():
     def __init__(self, name, desc, tags_list, daily_status, recurrence_pattern):
@@ -168,21 +168,42 @@ class Focus_Session():
     def __init__(self, target_task_id, target_duration, total_elapsed_time, legitimate_pause_duration, distraction_pause_duration, session_outcome):
         pass
 class Task_Manager():
+
     def __init__(self):
         self._tasks = {}
         self._routines = {}
+
     def add_task(self, task):
         if not isinstance(task, Task):
             raise TypeError(f"Error: Attempted to add {type(task)} instead of a task")
         if task._task_id in self._tasks:
             raise ValueError(f"Error: Task already in list of tasks")
         self._tasks[task._task_id] = task
+
     def remove_task(self, task):
         if not isinstance(task, Task):
             raise TypeError(f"Error: Attempted to remove {type(task)} instead of a task")
         if task._task_id not in self._tasks:
             raise ValueError(f"Error: Target task was not found")
         self._tasks.pop(task._task_id)
+
+    def get_task(self, task_id):
+        if task_id not in self._tasks:
+            raise ValueError(f"Error: Target task was not found")
+        return self._tasks[task_id]
+    
+    def get_all_tasks(self):
+        return list(self._tasks.values())
+    
+    def duplicate_task(self, task_id):
+        og_task = self.get_task(task_id)
+        new_task = Task(og_task.name, list(og_task._tags), og_task._due_date, og_task._duration, og_task._factor_urgency, og_task._factor_ambition, og_task.desc)
+        self._tasks[new_task._task_id] = new_task
+        
+    def update_task_status(self, task_id, new_status):
+        task = self.get_task(task_id)
+        task._update_status(new_status)
+
         
 
 try:
