@@ -27,15 +27,20 @@ class Task():
     """Represents the template for what defines a task, all of the details of a task
 
     Attributes:
-        tags (lst): The list of tags associated with the task
-        duration (int): The total expected time in minutes the task will take
-        factor_urgency and factor_ambition (int): These are two of the "factors" the system uses to calculate the equilibrium score.
-            They are about how important a task is, and how ambitious the task being undertaken is respectively.
-            They accept values on a fixed integer scale from 1-10.
-            These will be used to determine weighting for the equillibrium algorithm
-        status (str): Variable determining whether the task is active, completed, or has been procrastinated
+        Class Attributes:
+            VALID_STATUSES (lst): The list of accepted values for status
+        Instance Attributes:
+            name (str): A descriptive identifier for the task used by the user(NOT USED BY THE PROGRAM TO INDENTIFY TASKS)
+            tags (list): The list of tags associated with the task
+            duration (int): The total expected time in minutes the task will take
+            factor_urgency (int) 
+            and factor_ambition (int): These are two of the "factors" the system uses to calculate the equilibrium score.
+                They are about how important a task is, and how ambitious the task being undertaken is respectively.
+                They accept values on a fixed integer scale from 1-10.
+                These will be used to determine weighting for the equillibrium algorithm
+            status (str): Variable determining whether the task is active, completed, or has been procrastinated
     """
-    VALID_STATUSES = ["active", "completed", "procrastinated"] # A list of values accepted as a status
+    VALID_STATUSES = ["active", "completed", "procrastinated"]
     def __init__(self, name, tags, due_date, duration, factor_urgency, factor_ambition, desc):
 
         self._tags = []
@@ -168,12 +173,24 @@ class Focus_Session():
     def __init__(self, target_task_id, target_duration, total_elapsed_time, legitimate_pause_duration, distraction_pause_duration, session_outcome):
         pass
 class Task_Manager():
+    """
+    Manages the collection of tasks and routines
+    Attributes:
+        Instance Attributes:
+            self._tasks (dict) : The collection of all stored tasks.
+                Reference key for each task is their unique task ID
+            self._routines (dict): The collection of all stored routines.
+                Reference key for each routine is their unique ID
 
+    """
     def __init__(self):
         self._tasks = {}
         self._routines = {}
 
     def add_task(self, task):
+        """
+        Adds a new task to the collection of tasks
+        """
         if not isinstance(task, Task):
             raise TypeError(f"Error: Attempted to add {type(task)} instead of a task")
         if task._task_id in self._tasks:
@@ -181,6 +198,9 @@ class Task_Manager():
         self._tasks[task._task_id] = task
 
     def remove_task(self, task):
+        """
+        Removes an existing task from the collection of tasks
+        """
         if not isinstance(task, Task):
             raise TypeError(f"Error: Attempted to remove {type(task)} instead of a task")
         if task._task_id not in self._tasks:
@@ -188,21 +208,34 @@ class Task_Manager():
         self._tasks.pop(task._task_id)
 
     def get_task(self, task_id):
+        """
+        Uses a task ID to identify and return the object assoiated with the ID
+        """
         if task_id not in self._tasks:
             raise ValueError(f"Error: Target task was not found")
         return self._tasks[task_id]
     
     def get_all_tasks(self):
+        """
+        Returns a list of the all of the objects stored in the dictionary "tasks"
+        """
         return list(self._tasks.values())
     
     def duplicate_task(self, task_id):
-        og_task = self.get_task(task_id)
+        """
+        Creates a copy of a selected task and assigns the copy to a new ID
+        """
+        og_task = self.get_task(task_id) #shorthand for original task
         new_task = Task(og_task.name, list(og_task._tags), og_task._due_date, og_task._duration, og_task._factor_urgency, og_task._factor_ambition, og_task.desc)
         self._tasks[new_task._task_id] = new_task
-        
+
     def update_task_status(self, task_id, new_status):
+        """
+        Updates the task status.
+        Valid Statuses include: active, procrastinated and completed
+        """
         task = self.get_task(task_id)
-        task._update_status(new_status)
+        task.update_status(new_status)
 
         
 
