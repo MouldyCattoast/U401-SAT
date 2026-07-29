@@ -42,7 +42,11 @@ class Task():
     """
     VALID_STATUSES = ["active", "completed", "procrastinated"]
     def __init__(self, name, tags, due_date, duration, factor_urgency, factor_ambition, desc):
-
+        """
+        Jusifications:
+            - init uses setters to define most attributes so that they can be validated
+            - task_id uses UUID so that
+        """
         self._tags = []
         for tag in tags:
             self.add_tag(tag)
@@ -57,7 +61,11 @@ class Task():
 
     def add_tag(self, new_tag):
         """
-        Adds a new tag to the list of tags associated with the task
+        Description:
+            Adds a new tag to the list of tags associated with the task
+        Justifcations:
+
+
         """
         if not isinstance(new_tag, str):
             raise TypeError(f"Error: Tags must be a string. Type Inputted: {type(new_tag)}")
@@ -68,7 +76,10 @@ class Task():
 
     def remove_tag(self, target_tag):
         """
-        Removes the specified tag from the list of tags associated with the task
+        Description:
+            Removes the specified tag from the list of tags associated with the task
+        Justifications:
+            Target tag is stripped and lowered to match naming convention for tags
         """
         if isinstance(target_tag, str):
             target_tag.strip().lower()
@@ -78,8 +89,15 @@ class Task():
 
     def conv_to_dict(self):
         """
-        Converts the object into dictionary format, where each attribute is a key.
-        This is for later use regarding data storage
+        Description:
+            Converts the object into dictionary format, where each attribute is a key.
+            This is for later use regarding data storage
+        Justifications:
+            - Dictionary used to store data rather than lists as dictionaries better match the nature of objects being that they have descriptive attributes.
+            Additionally, 
+            Using a list instead would make code much less readable and prone to errors
+            - UUID is used for identification for tasks, as it generates a unique code.
+            If something like a regular number were used to indentify tasks, say the 
         """
         task_dict = {"task_id": self._task_id,
                      "name": self.name,
@@ -95,8 +113,15 @@ class Task():
     
     def update_factor_urgency(self, new_val):
         """
-        Updates the value of the variable representing the factor of urgency.
-        Accepts integer value in the following range: 1<=n<=10
+        Description:
+            Updates the value of the variable representing the factor of urgency.
+            Accepts integer value in the following range: 1<=n<=10
+        Justifications:
+            - A range of 1-10 is typical for user rated metrics as humans understand percentages well, which are written in base 10 automatically.
+            - A range of 1-10 mimics this as it is similarly base 10.
+            - A more specific range such as 1-100 and also floats such as 7.58 are avoided, as users will find it hard to imagine subjective ratings to such a small scale.
+            - Similarly, a less specific range such as 1-5 is avoided, as it might not offer the same flexibility as a scale of 1-10.
+            - As such 1-10 is a good choice for this.
         """
         if not isinstance(new_val, int):
             raise TypeError(f"Error: Value inputted is not an integer. Data Recieved: {new_val}")
@@ -109,24 +134,37 @@ class Task():
             self._factor_urgency = new_val
 
     def update_factor_ambition(self, new_val):
-            """
+        """
+        Description:
             Updates the value of the variable representing the factor of ambition.
             Accepts integer value in the following range: 1<=n<=10
-            """
-            if not isinstance(new_val, int):
-                print(f"Error: Value inputted is not an integer. Data Recieved: {new_val}")
-                return
-            
-            if new_val>10:
-                self._factor_ambition = 10
-            elif new_val<1:
-                self._factor_ambition = 1
-            else:
-                self._factor_ambition = new_val
+        Justifications:
+            - A range of 1-10 is typical for user rated metrics as humans understand percentages well, which are written in base 10 automatically.
+            - A range of 1-10 mimics this as it is similarly base 10.
+            - A more specific range such as 1-100 and also floats such as 7.58 are avoided, as users will find it hard to imagine subjective ratings to such a small scale.
+            - Similarly, a less specific range such as 1-5 is avoided, as it might not offer the same flexibility as a scale of 1-10.
+                As such 1-10 is a good choice for this.
+        """
+        if not isinstance(new_val, int):
+            print(f"Error: Value inputted is not an integer. Data Recieved: {new_val}")
+            return
+        
+        if new_val>10:
+            self._factor_ambition = 10
+        elif new_val<1:
+            self._factor_ambition = 1
+        else:
+            self._factor_ambition = new_val
 
     def update_duration(self, new_duration):
         """
-        Updates the value representing the total expected duration a task shall take in minutes
+        Description:
+
+            Updates the value representing the total expected duration a task shall take in minutes.
+        
+        Justifications:
+            - Duration is recorded in minutes, as this requires less computational work, and it only requires a single conversion by the system before entering data, which is much ore tidy.
+
         """
         if not isinstance(new_duration, int):
             raise TypeError(f"Error: Value inputted is not an integer. Data Recieved: {type(new_duration)}")
@@ -138,7 +176,12 @@ class Task():
             self._duration = new_duration
     def update_due_date(self, new_due_date):
         """
-        Updates the value representing the date a task is due in the format: YYYY-MM-DD
+        Description:
+            Updates the value representing the date a task is due in the format: YYYY-MM-DD
+        Justifications:
+            - Uses Top Down YYYY-MM-DD to sort by the largest portion first
+
+
         """
         if not isinstance(new_due_date, str):
             raise TypeError(f"Error: Input Invalid. Please use a string following YYYY-MM-DD format, you inputted: {new_due_date}")
@@ -150,7 +193,8 @@ class Task():
             
     def update_status(self, new_status):
         """
-        Updates the status of the task, valid options include "active", "procrastinated" and "completed"
+        Description:
+            Updates the status of the task, valid options include "active", "procrastinated" and "completed"
         """
         if not isinstance(new_status ,str):
             raise TypeError(f"Error: Value is not a string, you inputted{type(new_status)}")
@@ -189,7 +233,8 @@ class Task_Manager():
 
     def add_task(self, task):
         """
-        Adds a new task to the collection of tasks
+        Description:
+            Adds a new task to the collection of tasks
         """
         if not isinstance(task, Task):
             raise TypeError(f"Error: Attempted to add {type(task)} instead of a task")
@@ -199,7 +244,8 @@ class Task_Manager():
 
     def remove_task(self, task):
         """
-        Removes an existing task from the collection of tasks
+        Description:
+            Removes an existing task from the collection of tasks
         """
         if not isinstance(task, Task):
             raise TypeError(f"Error: Attempted to remove {type(task)} instead of a task")
@@ -209,7 +255,8 @@ class Task_Manager():
 
     def get_task(self, task_id):
         """
-        Uses a task ID to identify and return the object assoiated with the ID
+        Description:
+            Uses a task ID to identify and return the object assoiated with the ID
         """
         if task_id not in self._tasks:
             raise ValueError(f"Error: Target task was not found")
@@ -217,13 +264,15 @@ class Task_Manager():
     
     def get_all_tasks(self):
         """
-        Returns a list of the all of the objects stored in the dictionary "tasks"
+        Description:
+            Returns a list of the all of the objects stored in the dictionary "tasks"
         """
         return list(self._tasks.values())
     
     def duplicate_task(self, task_id):
         """
-        Creates a copy of a selected task and assigns the copy to a new ID
+        Description:
+            Creates a copy of a selected task's data and assigns the copy to a new ID
         """
         og_task = self.get_task(task_id) #shorthand for original task
         new_task = Task(og_task.name, list(og_task._tags), og_task._due_date, og_task._duration, og_task._factor_urgency, og_task._factor_ambition, og_task.desc)
@@ -231,8 +280,9 @@ class Task_Manager():
 
     def update_task_status(self, task_id, new_status):
         """
-        Updates the task status.
-        Valid Statuses include: active, procrastinated and completed
+        Description:
+            Updates the task status.
+            Valid Statuses include: active, procrastinated and completed
         """
         task = self.get_task(task_id)
         task.update_status(new_status)
