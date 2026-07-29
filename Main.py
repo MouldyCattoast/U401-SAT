@@ -59,13 +59,86 @@ class Task():
         self.desc = str(desc)
         self.update_status("active")
 
+    #Accessor Methods
+    def conv_to_dict(self):
+            """
+            Description:
+                Converts the object into dictionary format, where each attribute is a key.
+                This is for later use regarding data storage
+            Justifications:
+                - Dictionary used to store data rather than lists as dictionaries better match the nature of objects being that they have descriptive attributes.
+                Additionally, 
+                Using a list instead would make code much less readable and prone to errors
+                - UUID is used for identification for tasks, as it generates a unique code.
+                If something like a regular number were used to indentify tasks, say the 
+            """
+            task_dict = {"task_id": self._task_id,
+                            "name": self.name,
+                            "tags_list": self._tags,
+                            "due_date": self._due_date,
+                            "duration": self._duration,
+                            "factor_urgency": self._factor_urgency,
+                            "factor_ambition": self._factor_ambition,
+                            "description": self.desc,
+                            "status": self._status,
+                            }
+            return task_dict
+    
+    def get_task_id(self):
+        """
+        Description:
+            Returns the task's ID
+        """
+        return self._task_id
+
+
+    def get_tags(self):
+        """
+        Description:
+            Returns the list of tags associated with the task
+        """
+        return self._tags
+
+    def get_duration(self):
+        """
+        Description:
+            Returns the the total expected duration of the task
+        """
+        return self._duration
+    def get_due_date(self):
+        """
+        Description:
+            Returns the due date of the task
+        """
+        return self._due_date
+    
+    def get_urgency_val(self):
+        """
+        Description:
+            Returns the magnitude of the urgency factor for the task
+        """
+        return self._factor_urgency
+    
+    def get_ambition_val(self):
+        """
+        Description:
+            Returns the magnitude of the ambition factor for the task
+        """
+        return self._factor_ambition
+    def get_status(self):
+        """
+        Description:
+            Returns the task's current status
+        """
+        return self._status
+
+
+    #Mutator Methods
     def add_tag(self, new_tag):
         """
         Description:
             Adds a new tag to the list of tags associated with the task
         Justifcations:
-
-
         """
         if not isinstance(new_tag, str):
             raise TypeError(f"Error: Tags must be a string. Type Inputted: {type(new_tag)}")
@@ -85,76 +158,6 @@ class Task():
             target_tag.strip().lower()
         if target_tag in self._tags:
             self._tags.remove(target_tag)
-
-
-    def conv_to_dict(self):
-        """
-        Description:
-            Converts the object into dictionary format, where each attribute is a key.
-            This is for later use regarding data storage
-        Justifications:
-            - Dictionary used to store data rather than lists as dictionaries better match the nature of objects being that they have descriptive attributes.
-            Additionally, 
-            Using a list instead would make code much less readable and prone to errors
-            - UUID is used for identification for tasks, as it generates a unique code.
-            If something like a regular number were used to indentify tasks, say the 
-        """
-        task_dict = {"task_id": self._task_id,
-                     "name": self.name,
-                     "tags_list": self._tags,
-                     "due_date": self._due_date,
-                     "duration": self._duration,
-                     "factor_urgency": self._factor_urgency,
-                     "factor_ambition": self._factor_ambition,
-                     "description": self.desc,
-                     "status": self._status,
-                     }
-        return task_dict
-    
-    def update_factor_urgency(self, new_val):
-        """
-        Description:
-            Updates the value of the variable representing the factor of urgency.
-            Accepts integer value in the following range: 1<=n<=10
-        Justifications:
-            - A range of 1-10 is typical for user rated metrics as humans understand percentages well, which are written in base 10 automatically.
-            - A range of 1-10 mimics this as it is similarly base 10.
-            - A more specific range such as 1-100 and also floats such as 7.58 are avoided, as users will find it hard to imagine subjective ratings to such a small scale.
-            - Similarly, a less specific range such as 1-5 is avoided, as it might not offer the same flexibility as a scale of 1-10.
-            - As such 1-10 is a good choice for this.
-        """
-        if not isinstance(new_val, int):
-            raise TypeError(f"Error: Value inputted is not an integer. Data Recieved: {new_val}")
-        
-        if new_val>10:
-            self._factor_urgency = 10
-        elif new_val<1:
-            self._factor_urgency = 1
-        else:
-            self._factor_urgency = new_val
-
-    def update_factor_ambition(self, new_val):
-        """
-        Description:
-            Updates the value of the variable representing the factor of ambition.
-            Accepts integer value in the following range: 1<=n<=10
-        Justifications:
-            - A range of 1-10 is typical for user rated metrics as humans understand percentages well, which are written in base 10 automatically.
-            - A range of 1-10 mimics this as it is similarly base 10.
-            - A more specific range such as 1-100 and also floats such as 7.58 are avoided, as users will find it hard to imagine subjective ratings to such a small scale.
-            - Similarly, a less specific range such as 1-5 is avoided, as it might not offer the same flexibility as a scale of 1-10.
-                As such 1-10 is a good choice for this.
-        """
-        if not isinstance(new_val, int):
-            print(f"Error: Value inputted is not an integer. Data Recieved: {new_val}")
-            return
-        
-        if new_val>10:
-            self._factor_ambition = 10
-        elif new_val<1:
-            self._factor_ambition = 1
-        else:
-            self._factor_ambition = new_val
 
     def update_duration(self, new_duration):
         """
@@ -190,7 +193,51 @@ class Task():
             self._due_date = new_due_date
         except ValueError:
             raise ValueError(f"Error: Date format invalid. Please use YYYY-MM-DD, you inputted: {new_due_date}")
-            
+    def update_factor_urgency(self, new_val):
+        """
+        Description:
+            Updates the value of the variable representing the factor of urgency.
+            Accepts integer value in the following range: 1<=n<=10
+        Justifications:
+            - A range of 1-10 is typical for user rated metrics as humans understand percentages well, which are written in base 10 automatically.
+            - A range of 1-10 mimics this as it is similarly base 10.
+            - A more specific range such as 1-100 and also floats such as 7.58 are avoided, as users will find it hard to imagine subjective ratings to such a small scale.
+            - Similarly, a less specific range such as 1-5 is avoided, as it might not offer the same flexibility as a scale of 1-10.
+            - As such 1-10 is a good choice for this.
+        """
+        if not isinstance(new_val, int):
+            raise TypeError(f"Error: Value inputted is not an integer. Data Recieved: {new_val}")
+        
+        if new_val>10:
+            self._factor_urgency = 10
+        elif new_val<1:
+            self._factor_urgency = 1
+        else:
+            self._factor_urgency = new_val
+    
+    def update_factor_ambition(self, new_val):
+        """
+        Description:
+            Updates the value of the variable representing the factor of ambition.
+            Accepts integer value in the following range: 1<=n<=10
+        Justifications:
+            - A range of 1-10 is typical for user rated metrics as humans understand percentages well, which are written in base 10 automatically.
+            - A range of 1-10 mimics this as it is similarly base 10.
+            - A more specific range such as 1-100 and also floats such as 7.58 are avoided, as users will find it hard to imagine subjective ratings to such a small scale.
+            - Similarly, a less specific range such as 1-5 is avoided, as it might not offer the same flexibility as a scale of 1-10.
+                As such 1-10 is a good choice for this.
+        """
+        if not isinstance(new_val, int):
+            print(f"Error: Value inputted is not an integer. Data Recieved: {new_val}")
+            return
+        
+        if new_val>10:
+            self._factor_ambition = 10
+        elif new_val<1:
+            self._factor_ambition = 1
+        else:
+            self._factor_ambition = new_val
+
     def update_status(self, new_status):
         """
         Description:
@@ -202,21 +249,25 @@ class Task():
             raise ValueError(f"Error: Value not in list of valid status options, please use on of the following: 'active', 'procrastinated,'completed', You Inputted: {new_status}")
         self._status = new_status
 
+    
+
 class Routine():
+
     def __init__(self, name, desc, tags_list, daily_status, recurrence_pattern):
        pass
+class FixedRoutine():
     def __init__(self, start_time, end_time):
         pass
-class Flexible_Routine(Routine):
+class FlexibleRoutine(Routine):
     def __init__(self, min_duration, progress, last_reset_date):
         pass
-class User_Profile():
+class UserProfile():
     def __init__(self, equilibrium_score, current_factor_ratings, target_goals, historical_data_log, decay_severity):
         pass
-class Focus_Session():
+class FocusSession():
     def __init__(self, target_task_id, target_duration, total_elapsed_time, legitimate_pause_duration, distraction_pause_duration, session_outcome):
         pass
-class Task_Manager():
+class TaskManager():
     """
     Manages the collection of tasks and routines
     Attributes:
@@ -230,7 +281,24 @@ class Task_Manager():
     def __init__(self):
         self._tasks = {}
         self._routines = {}
+    #Accessor Methods
+    def get_task(self, task_id):
+        """
+        Description:
+            Uses a task ID to identify and return the object assoiated with the ID
+        """
+        if task_id not in self._tasks:
+            raise ValueError(f"Error: Target task was not found")
+        return self._tasks[task_id]
+        
+    def get_all_tasks(self):
+        """
+        Description:
+            Returns a list of the all of the objects stored in the dictionary "tasks"
+        """
+        return list(self._tasks.values())
 
+    #Mutator Methods
     def add_task(self, task):
         """
         Description:
@@ -253,21 +321,6 @@ class Task_Manager():
             raise ValueError(f"Error: Target task was not found")
         self._tasks.pop(task._task_id)
 
-    def get_task(self, task_id):
-        """
-        Description:
-            Uses a task ID to identify and return the object assoiated with the ID
-        """
-        if task_id not in self._tasks:
-            raise ValueError(f"Error: Target task was not found")
-        return self._tasks[task_id]
-    
-    def get_all_tasks(self):
-        """
-        Description:
-            Returns a list of the all of the objects stored in the dictionary "tasks"
-        """
-        return list(self._tasks.values())
     
     def duplicate_task(self, task_id):
         """
