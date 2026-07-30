@@ -2,6 +2,7 @@ import customtkinter
 import json
 import uuid
 from datetime import datetime
+import os
 THEMES = {
     "dark": {
         "background": "#1A1A2E",
@@ -41,48 +42,54 @@ class Task():
             status (str): Variable determining whether the task is active, completed, or has been procrastinated
     """
     VALID_STATUSES = ["active", "completed", "procrastinated"]
-    def __init__(self, name, tags, due_date, duration, factor_urgency, factor_ambition, desc):
+    def __init__(self, name, tags, due_date, duration, factor_urgency, factor_ambition, desc, task_id = None, status = "active"):
         """
         Jusifications:
             - init uses setters to define most attributes so that they can be validated
             - task_id uses UUID so that
         """
+        if task_id:
+            self._task_id = task_id
+        else:
+            self._task_id = str(uuid.uuid4())
+
         self._tags = []
         for tag in tags:
             self.add_tag(tag)
-        self._task_id = str(uuid.uuid4())
+        
         self.name = str(name)
         self.update_due_date(due_date)
         self.update_duration(duration)
         self.update_factor_urgency(factor_urgency)
         self.update_factor_ambition(factor_ambition)
         self.desc = str(desc)
-        self.update_status("active")
+        self.update_status(status)
+       
 
     #Accessor Methods
     def conv_to_dict(self):
-            """
-            Description:
-                Converts the object into dictionary format, where each attribute is a key.
-                This is for later use regarding data storage
-            Justifications:
-                - Dictionary used to store data rather than lists as dictionaries better match the nature of objects being that they have descriptive attributes.
-                Additionally, 
-                Using a list instead would make code much less readable and prone to errors
-                - UUID is used for identification for tasks, as it generates a unique code.
-                If something like a regular number were used to indentify tasks, say the 
-            """
-            task_dict = {"task_id": self._task_id,
-                            "name": self.name,
-                            "tags_list": self._tags,
-                            "due_date": self._due_date,
-                            "duration": self._duration,
-                            "factor_urgency": self._factor_urgency,
-                            "factor_ambition": self._factor_ambition,
-                            "description": self.desc,
-                            "status": self._status,
-                            }
-            return task_dict
+        """
+        Description:
+            Converts the object into dictionary format, where each attribute is a key.
+            This is for later use regarding data storage
+        Justifications:
+            - Dictionary used to store data rather than lists as dictionaries better match the nature of objects being that they have descriptive attributes.
+            Additionally, 
+            Using a list instead would make code much less readable and prone to errors
+            - UUID is used for identification for tasks, as it generates a unique code.
+            If something like a regular number were used to indentify tasks, say the 
+        """
+        task_dict = {"task_id": self._task_id,
+                        "name": self.name,
+                        "tags": self._tags,
+                        "due_date": self._due_date,
+                        "duration": self._duration,
+                        "factor_urgency": self._factor_urgency,
+                        "factor_ambition": self._factor_ambition,
+                        "description": self.desc,
+                        "status": self._status,
+                        }
+        return task_dict
     
     def get_task_id(self):
         """
@@ -249,8 +256,6 @@ class Task():
             raise ValueError(f"Error: Value not in list of valid status options, please use on of the following: 'active', 'procrastinated,'completed', You Inputted: {new_status}")
         self._status = new_status
 
-    
-
 class Routine():
 
     def __init__(self, name, desc, tags_list, daily_status, recurrence_pattern):
@@ -267,6 +272,7 @@ class UserProfile():
 class FocusSession():
     def __init__(self, target_task_id, target_duration, total_elapsed_time, legitimate_pause_duration, distraction_pause_duration, session_outcome):
         pass
+
 class TaskManager():
     """
     Manages the collection of tasks and routines
@@ -339,7 +345,36 @@ class TaskManager():
         """
         task = self.get_task(task_id)
         task.update_status(new_status)
+    #Actions
+    def save_tasks(self):
+        tasks_to_save = {}
+        for task_id, task in self._tasks.items():
+            tasks_to_save[task_id] = task.conv_to_dict()
+        with open("tasks.json", "w") as file:
+            json.dump(tasks_to_save, file , indent=4)
+    def load_tasks(self):
+        if not os.path.exists("tasks.json"):
+            print("No tasks were found")
+            return
+        with open("tasks.json", "r") as file:
+            loaded_data = json.load(file)
+            for task_id, task_data in loaded_data.items():
+                if task_id != task_data["task_id"]:
+                    raise ValueError (f"Data corruption detected! Key {task_id} does not match task ID {task_data['task_id']}")
+                name = task_data["name"]
+                tags = task_data["tags"]
+                due_date = task_data["due_date"]
+                duration = task_data["duration"]
+                factor_urgency = task_data["factor_urgency"]
+                factor_ambition = task_data["factor_ambition"]
+                desc = task_data["description"]
+                status = task_data["status"]
 
+                new_task = Task(name, tags, due_date, duration, factor_urgency, factor_ambition, desc, task_id, status)
+                self._tasks[task_id] = new_task
+
+
+    
         
 
 try:
