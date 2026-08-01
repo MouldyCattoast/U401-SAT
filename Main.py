@@ -3,8 +3,9 @@ import json
 import uuid
 from datetime import datetime
 import os
-from Backend import Task
-from Backend import TaskManager
+from backend import Task
+from backend import TaskManager
+from frontend.gui import AephaseApp
 
 THEMES = {
     "dark": {
@@ -27,13 +28,5 @@ THEMES = {
 
 
 
-
-class FocusSession():
-    def __init__(self, target_task_id, target_duration, total_elapsed_time, legitimate_pause_duration, distraction_pause_duration, session_outcome):
-        pass
-
-try:
-    task_a = Task("lalala", ["catty fat", "fatty cat   ", "MEloN"], "2025-12-31", 55, 12, 4, "fffff")
-    print(task_a.conv_to_dict())
-except (TypeError, ValueError) as error:
-    print(f"Task creation blocked: {error}")
+if __name__ == "__main__":
+    AephaseApp().mainloop()
