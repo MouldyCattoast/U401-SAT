@@ -10,7 +10,7 @@
   },
   "CTkButton": {
     "fg_color": ["#6B64C9", "#8A84E0"],
-    "hover_color": ["#F5F5FF", "#232946"],
+    "hover_color": ["#F5F5FF", "#5e5a96"],
     "border_color": ["gray40", "gray50"],
     "text_color": ["#1E293B", "#F0F4F8"],
     "text_color_disabled": ["gray74", "gray60"],
@@ -52,5 +52,13 @@
     "fg_color": "transparent",
     "button_color": ["gray55", "gray41"],
     "button_hover_color": ["gray40", "gray53"]
+  },
+  "CTkScrollableFrame": {
+    "fg_color": ["#F5F5FF", "#232946"],
+    "label_fg_color": ["#F5F5FF", "#232946"],
+    "scrollbar_button_color": ["#F5F5FF", "#8A84E0"],
+    "scrollbar_button_hover_color": ["gray40", "#8A84E0"],
+    "scrollbar_corner_radius": 1000,
+    "scrollbar_border_spacing": 4
   }
 }
