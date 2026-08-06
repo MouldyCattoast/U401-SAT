@@ -279,28 +279,54 @@ class AephaseApp(ctk.CTk):
 
     def show_dashboard(self):
         self.hide_all_pages()
+        self.reset_button_colours()
         self.dashboard_frame.grid(row=0, column=0, sticky="nsew")
     def show_profile(self):
         self.hide_all_pages()
+        self.reset_button_colours()
+        self.btn_profile.configure(fg_color="#5e5a96")
         self.profile_frame.grid(row=0, column=0, sticky="nsew")
     def show_tasks(self):
         self.hide_all_pages()
+        self.reset_button_colours()
+        self.btn_tasks.configure(fg_color="#5e5a96")
         self.tasks_frame.grid(row=0, column=0, sticky="nsew")
     def show_routines(self):
         self.hide_all_pages()
+        self.reset_button_colours()
+        self.btn_routines.configure(fg_color="#5e5a96")
         self.routines_frame.grid(row=0, column=0, sticky="nsew")
+
+
     def show_recovery(self):
         self.hide_all_pages()
+        self.reset_button_colours()
+        self.btn_recovery.configure(fg_color="#5e5a96")
         self.recovery_frame.grid(row=0, column=0, sticky="nsew")
     def show_focus(self):
         self.hide_all_pages()
+        self.reset_button_colours()
+        self.btn_focus.configure(fg_color="#5e5a96")
         self.focus_frame.grid(row=0, column=0, sticky="nsew")
     def show_recollection(self):
         self.hide_all_pages()
+        self.reset_button_colours()
+        self.btn_recollection.configure(fg_color="#5e5a96")
         self.recollection_frame.grid(row=0, column=0, sticky="nsew")
     def show_settings(self):
         self.hide_all_pages()
+        self.reset_button_colours()
+        self.btn_settings.configure(fg_color="#5e5a96")
         self.settings_frame.grid(row=0, column=0, sticky="nsew")
+    def reset_button_colours(self):
+        self.btn_profile.configure(fg_color="#8A84E0")
+        self.btn_tasks.configure(fg_color="#8A84E0")
+        self.btn_routines.configure(fg_color="#8A84E0")
+        self.btn_recovery.configure(fg_color="#8A84E0")
+        self.btn_focus.configure(fg_color="#8A84E0")
+        self.btn_recollection.configure(fg_color="#8A84E0")
+        self.btn_settings.configure(fg_color="#8A84E0")
+        
 
 if __name__ == "__main__":
     app = AephaseApp()
