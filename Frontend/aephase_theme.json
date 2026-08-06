@@ -18,8 +18,10 @@
     "corner_radius": 10
   },
   "CTkLabel": {
+    "corner_radius": 0,
     "text_color": ["#1E293B", "#F0F4F8"],
-    "fg_color": "transparent"
+    "fg_color": "transparent",
+    "font": ["Inter", 14]
   },
   "CTkEntry": {
     "fg_color": ["#F5F5FF", "#232946"],

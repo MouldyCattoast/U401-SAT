@@ -12,12 +12,19 @@ class AephaseApp(ctk.CTk):
         ctk.set_appearance_mode("dark")
         self.title("Aephase")
         self.geometry("1000x600")
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_rowconfigure(0, weight=1)
+        self.create_primary_view()
         self.create_sidebar()
-
+        self.create_pages()
+        
+    def create_primary_view(self):
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_rowconfigure(0, weight=1)  
+        self.main_frame=ctk.CTkFrame(self, fg_color="#1A1A2E")
+        self.main_frame.grid(row=0, column=1, sticky="nsew")
+        self.main_frame.grid_columnconfigure(0, weight=1)
+        self.main_frame.grid_rowconfigure(0, weight=1) 
+                
     def create_sidebar(self):
-
         #Sidebar Setup
         self.sidebar = ctk.CTkFrame(self, width=200, corner_radius=0)
         self.sidebar.grid(row=0, column=0, sticky="nsew")
@@ -46,9 +53,7 @@ class AephaseApp(ctk.CTk):
             command=self.show_dashboard
             )
         self.logo_button.grid(row=0, column=0, padx=20,pady=20)
-        self.main_frame=ctk.CTkFrame(self, fg_color="transparent")
-        self.main_frame.grid(row=0, column=1, sticky="nsew")
-
+        
         #Profile Button
         self.icon_profile_dark = Image.open("assets/icons/dark/profile_dark.png")
         self.icon_profile_light = Image.open("assets/icons/light/profile_light.png")
@@ -160,23 +165,142 @@ class AephaseApp(ctk.CTk):
             anchor="w"
             )
         self.btn_settings.grid(row=6, column=0, padx=20, pady=10, sticky="ew")
+    def create_pages(self):
+        self.create_dashboard_page()
+        self.create_profile_page()
+        self.create_tasks_page()
+        self.create_routines_page()
+        self.create_recovery_page()
+        self.create_focus_page()
+        self.create_recollection_page()
+        self.create_settings_page()
+        self.hide_all_pages()
+        self.show_dashboard()
+
+    def hide_all_pages(self):
+        self.dashboard_frame.grid_remove()
+        self.profile_frame.grid_remove()
+        self.tasks_frame.grid_remove()
+        self.routines_frame.grid_remove()
+        self.recovery_frame.grid_remove()
+        self.focus_frame.grid_remove()
+        self.recollection_frame.grid_remove()
+        self.settings_frame.grid_remove()
+
+    def create_dashboard_page(self):
+        self.dashboard_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
+        self.dashboard_frame.grid(row=0, column=0, sticky="nsew")
+        ctk.CTkLabel(
+            self.dashboard_frame, 
+            text="Dashboard (Work In Progress)", 
+            font=ctk.CTkFont(
+                size=24, 
+                weight="bold"
+                )
+            ).pack()
+    def create_profile_page(self):
+        self.profile_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
+        self.profile_frame.grid(row=0, column=0, sticky="nsew")
+        ctk.CTkLabel(
+            self.profile_frame, 
+            text="Profile (Work In Progress)", 
+            font=ctk.CTkFont(
+                size=24, 
+                weight="bold"
+                )
+            ).pack()
+    def create_tasks_page(self):
+        self.tasks_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
+        self.tasks_frame.grid(row=0, column=0, sticky="nsew")
+        ctk.CTkLabel(
+            self.tasks_frame, 
+            text="Tasks (Work In Progress)", 
+            font=ctk.CTkFont(
+                size=24, 
+                weight="bold"
+                )
+            ).pack()
+    def create_recovery_page(self):
+        self.recovery_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
+        self.recovery_frame.grid(row=0, column=0, sticky="nsew")
+        ctk.CTkLabel(
+            self.recovery_frame, 
+            text="Recovery (Work In Progress)", 
+            font=ctk.CTkFont(
+                size=24, 
+                weight="bold"
+                )
+            ).pack()
+    def create_routines_page(self):
+        self.routines_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
+        self.routines_frame.grid(row=0, column=0, sticky="nsew")
+        ctk.CTkLabel(
+            self.routines_frame, 
+            text="Routines (Work In Progress)", 
+            font=ctk.CTkFont(
+                size=24, 
+                weight="bold"
+                )
+            ).pack()
+    def create_focus_page(self):
+        self.focus_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
+        self.focus_frame.grid(row=0, column=0, sticky="nsew")
+        ctk.CTkLabel(
+            self.focus_frame, 
+            text="Focus (Work In Progress)", 
+            font=ctk.CTkFont(
+                size=24, 
+                weight="bold"
+                )
+            ).pack()
+    def create_recollection_page(self):
+            self.recollection_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
+            self.recollection_frame.grid(row=0, column=0, sticky="nsew")
+            ctk.CTkLabel(
+                self.recollection_frame, 
+                text="Recollection (Work In Progress)", 
+                font=ctk.CTkFont(
+                    size=24, 
+                    weight="bold"
+                    ),
+                ).pack()
+    def create_settings_page(self):
+        self.settings_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
+        self.settings_frame.grid(row=0, column=0, sticky="nsew")
+        ctk.CTkLabel(
+            self.settings_frame, 
+            text="Settings (Work In Progress)", 
+            font=ctk.CTkFont(
+                size=24, 
+                weight="bold"
+                ),
+            ).pack()
+        
 
     def show_dashboard(self):
-        pass
+        self.hide_all_pages()
+        self.dashboard_frame.grid(row=0, column=0, sticky="nsew")
     def show_profile(self):
-        pass
+        self.hide_all_pages()
+        self.profile_frame.grid(row=0, column=0, sticky="nsew")
     def show_tasks(self):
-        pass
-    def show_recovery(self):
-        pass
+        self.hide_all_pages()
+        self.tasks_frame.grid(row=0, column=0, sticky="nsew")
     def show_routines(self):
-        pass
+        self.hide_all_pages()
+        self.routines_frame.grid(row=0, column=0, sticky="nsew")
+    def show_recovery(self):
+        self.hide_all_pages()
+        self.recovery_frame.grid(row=0, column=0, sticky="nsew")
     def show_focus(self):
-        pass
+        self.hide_all_pages()
+        self.focus_frame.grid(row=0, column=0, sticky="nsew")
     def show_recollection(self):
-        pass
+        self.hide_all_pages()
+        self.recollection_frame.grid(row=0, column=0, sticky="nsew")
     def show_settings(self):
-        pass
+        self.hide_all_pages()
+        self.settings_frame.grid(row=0, column=0, sticky="nsew")
 
 if __name__ == "__main__":
     app = AephaseApp()
