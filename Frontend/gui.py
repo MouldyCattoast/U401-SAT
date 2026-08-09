@@ -3,6 +3,7 @@ import tkinter as tk
 from backend import Task
 from backend import TaskManager
 from PIL import Image
+from .components import TaskCard
 
 class AephaseApp(ctk.CTk):
     def __init__(self):
