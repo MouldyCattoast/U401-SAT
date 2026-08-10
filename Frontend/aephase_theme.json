@@ -52,14 +52,15 @@
     "corner_radius": 1000,
     "border_spacing": 4,
     "fg_color": "transparent",
-    "button_color": ["gray55", "gray41"],
-    "button_hover_color": ["gray40", "gray53"]
+    "button_color": ["#F5F5FF", "#8A84E0"],
+    "button_hover_color": ["#F5F5FF", "#5e5a96"]
   },
   "CTkScrollableFrame": {
     "fg_color": ["#F5F5FF", "#232946"],
     "label_fg_color": ["#F5F5FF", "#232946"],
-    "scrollbar_button_color": ["#F5F5FF", "#8A84E0"],
-    "scrollbar_button_hover_color": ["gray40", "#8A84E0"],
+    "scrollbar_button_fg_color": "transparent",
+    "scrollbar_button_color": ["#6B64C9", "#8A84E0"],
+    "scrollbar_button_hover_color": ["#F5F5FF", "#5e5a96"],
     "scrollbar_corner_radius": 1000,
     "scrollbar_border_spacing": 4
   }

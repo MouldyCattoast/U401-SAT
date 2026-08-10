@@ -10,7 +10,7 @@ class TaskCard(ctk.CTkFrame):
     Attributes:
         Class Attributes:
         Instance Attributes:
-            parent_frame(ctk.CTkFrame): This represents the framethat the task card is located in
+            parent_frame(ctk.CTkFrame): This represents the frame that the task card is located in
             task_obj(Task): The specific task the card is showing
     """
     def __init__(self, parent_frame: ctk.CTkFrame, task_obj: Task):
@@ -20,7 +20,6 @@ class TaskCard(ctk.CTkFrame):
         self.name_label.grid(row=0, column=0, sticky="nw", padx=10, pady=10)
         self.due_date_label = ctk.CTkLabel(self, text = f"Due: {str(self.task_obj._due_date)}")
         self.due_date_label.grid(row=1, column=0, sticky = "sw", padx=10, pady=10)
-
         self.icon_edit_dark = Image.open("assets/icons/dark/edit_dark.png")
         self.icon_edit_light = Image.open("assets/icons/light/edit_light.png")
         self.ctk_icon_edit = ctk.CTkImage(

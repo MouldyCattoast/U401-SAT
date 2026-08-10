@@ -13,6 +13,7 @@ class AephaseApp(ctk.CTk):
         ctk.set_appearance_mode("dark")
         self.title("Aephase")
         self.geometry("1000x600")
+        self.iconbitmap("assets/aephase_logo.png") 
         self.create_primary_view()
         self.create_sidebar()
         self.create_pages()
@@ -43,7 +44,7 @@ class AephaseApp(ctk.CTk):
         self.ctk_logo = ctk.CTkImage(
             light_image=self.logo_image, 
             dark_image=self.logo_image, 
-            size=(100,100)
+            size=(120,120)
             )
         self.logo_button = ctk.CTkButton(
             self.sidebar, 
@@ -216,16 +217,17 @@ class AephaseApp(ctk.CTk):
             self.tasks_frame, 
             text="Tasks (Work In Progress)", 
             font=ctk.CTkFont(
-                size=24, 
+                family="Poppins",
+                size=30, 
                 weight="bold"
                 )
             ).pack()
         self.tasks_scrollable_frame = ctk.CTkScrollableFrame(self.tasks_frame, fg_color="transparent")
-        self.tasks_scrollable_frame.pack( padx=10, pady=10, fill="both", expand=True)
+        self.tasks_scrollable_frame.pack( padx=5, pady=5, fill="both", expand=True)
         self.tasks_scrollable_frame.grid_columnconfigure(0, weight=1)
         dummy_task = Task("meow" ,"changes","2025-11-22", 450, 3, 5, "nothing")
         dummy_card= TaskCard(parent_frame=self.tasks_scrollable_frame, task_obj=dummy_task)
-        dummy_card.grid(row=0, column=0, sticky="ew")
+        dummy_card.grid(row=0, column=0, sticky="ew", padx=10, pady=10)
         dummy_card.grid_columnconfigure(0, weight=1)
     def create_recovery_page(self):
         self.recovery_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
