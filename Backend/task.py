@@ -10,8 +10,8 @@ class Task():
             VALID_STATUSES (lst): The list of accepted values for status
         Instance Attributes:
             name (str): A descriptive identifier for the task used by the user(NOT USED BY THE PROGRAM TO INDENTIFY TASKS)
-            tags (list): The list of tags associated with the task
             duration (int): The total expected time in minutes the task will take
+            tags (list): The list of tags associated with the task
             factor_urgency (int) 
             and factor_ambition (int): These are two of the "factors" the system uses to calculate the equilibrium score.
                 They are about how important a task is, and how ambitious the task being undertaken is respectively.
@@ -20,7 +20,7 @@ class Task():
             status (str): Variable determining whether the task is active, completed, or has been procrastinated
     """
     VALID_STATUSES = ["active", "completed", "procrastinated"]
-    def __init__(self, name, tags, due_date, duration, factor_urgency, factor_ambition, desc, task_id = None, status = "active"):
+    def __init__(self, name, due_date=None, duration=None, tags=None, factor_urgency=None, factor_ambition=None, desc=None, task_id = None, status = "active"):
         """
         Jusifications:
             - init uses setters to define most attributes so that they can be validated
@@ -32,7 +32,7 @@ class Task():
             self._task_id = str(uuid.uuid4())
 
         self._tags = []
-        for tag in tags:
+        for tag in (tags or []):
             self.add_tag(tag)
         
         self.name = str(name)
@@ -117,7 +117,7 @@ class Task():
             Target tag is stripped and lowered to match naming convention for tags
         """
         if isinstance(target_tag, str):
-            target_tag.strip().lower()
+            target_tag = target_tag.strip().lower()
         if target_tag in self._tags:
             self._tags.remove(target_tag)
 
@@ -131,12 +131,15 @@ class Task():
             - Duration is recorded in minutes, as this requires less computational work, and it only requires a single conversion by the system before entering data, which is much ore tidy.
 
         """
+        if new_duration is None or new_duration =="":
+            self._duration= None
+            return
         if not isinstance(new_duration, int):
-            raise TypeError(f"Error: Value inputted is not an integer. Data Recieved: {type(new_duration.__name__)}")
+            raise TypeError(f"Error: Value inputted is not an integer. Data Recieved: {new_duration}")
 
 
         if new_duration <= 0:
-            raise TypeError(f"Error: Value inputted must be a non-zero integer, you inputted: {type(new_duration).__name__}")
+            raise ValueError(f"Error: Value inputted must be a non-zero integer, you inputted: {type(new_duration).__name__}")
         else:
             self._duration = new_duration
     def update_due_date(self, new_due_date):
@@ -148,6 +151,9 @@ class Task():
 
 
         """
+        if not new_due_date:
+            self._due_date = None
+            return
         if not isinstance(new_due_date, str):
             raise TypeError(f"Error: Input Invalid. Please use a string following YYYY-MM-DD format, you inputted: {type(new_due_date).__name__}")
         try:
@@ -167,6 +173,9 @@ class Task():
             - Similarly, a less specific range such as 1-5 is avoided, as it might not offer the same flexibility as a scale of 1-10.
             - As such 1-10 is a good choice for this.
         """
+        if new_val is None:
+            self._factor_urgency=0
+            return
         if not isinstance(new_val, int):
             raise TypeError(f"Error: Value inputted is not an integer. Data Recieved: {type(new_val).__name__}")
         
@@ -189,9 +198,11 @@ class Task():
             - Similarly, a less specific range such as 1-5 is avoided, as it might not offer the same flexibility as a scale of 1-10.
                 As such 1-10 is a good choice for this.
         """
-        if not isinstance(new_val, int):
-            print(f"Error: Value inputted is not an integer. Data Recieved: {type(new_val).__name__}")
+        if new_val is None:
+            self._factor_ambition = 0
             return
+        if not isinstance(new_val, int):
+            raise TypeError(f"Error: Value inputted is not an integer. Data Recieved: {type(new_val).__name__}")
         
         if new_val>10:
             self._factor_ambition = 10

@@ -13,9 +13,15 @@ class TaskManager():
                 Reference key for each routine is their unique ID
 
     """
-    def __init__(self):
+    def __init__(self, filename="tasks.json"):
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(base_dir)
+        data_dir = os.path.join(project_root, "data")
+        os.makedirs(data_dir, exist_ok=True)
+        self._filename = os.path.join(data_dir, filename)
         self._tasks = {}
         self._routines = {}
+        self.load_tasks()
     #Accessor Methods
     def get_task(self, task_id):
         """
@@ -34,44 +40,81 @@ class TaskManager():
         return list(self._tasks.values())
 
     #Mutator Methods
-    def add_task(self, name, tags, due_date, factor_duration, factor_urgency, ambition, description):
+    def add_task(
+        self, 
+        name=None, 
+        due_date=None, 
+        duration=None, 
+        tags=None, 
+        factor_ambition=None, 
+        factor_urgency=None, 
+        desc=None,
+        save=True
+    ):
         """
         Description:
             Creates and adds a new task to the collection of tasks
         """
         max_attempts = 5
         for _ in range(max_attempts):
-            new_task = Task(name, tags, due_date, factor_duration, factor_urgency, ambition, description)
+            new_task = Task(
+                name=name, 
+                due_date=due_date, 
+                duration=duration, 
+                tags=tags,  
+                factor_urgency=factor_urgency, 
+                factor_ambition=factor_ambition, 
+                desc=desc,
+                )
             task_id = new_task.get_task_id()
             if task_id not in self._tasks:
                 self._tasks[task_id] = new_task
+
+                if save:
+                    self.save_tasks()
                 return task_id
         raise RuntimeError(f"Error: Failed to generate unique task ID after {max_attempts} attempts")
 
         
 
-    def remove_task(self, task):
+        
+
+    def remove_task(self, task, save=True):
         """
         Description:
             Removes an existing task from the collection of tasks
         """
         if not isinstance(task, Task):
             raise TypeError(f"Error: Attempted to remove {type(task).__name__} instead of a task")
-        if task._task_id not in self._tasks:
+        if task.get_task_id() not in self._tasks:
             raise ValueError(f"Error: Target task was not found")
-        self._tasks.pop(task._task_id)
+        self._tasks.pop(task.get_task_id())
+        if save:
+            self.save_tasks()
 
     
-    def duplicate_task(self, task_id):
+    def duplicate_task(self, task_id, save=True):
         """
         Description:
             Creates a copy of a selected task's data and assigns the copy to a new ID
         """
         og_task = self.get_task(task_id) #shorthand for original task
-        new_task = Task(og_task.name, list(og_task._tags), og_task._due_date, og_task._duration, og_task._factor_urgency, og_task._factor_ambition, og_task.desc)
-        self._tasks[new_task._task_id] = new_task
+        og_tags=og_task.get_tags()
+        og_tags = list(og_tags) if og_tags is not None else None
+        new_task = Task(
+            name=og_task.name, 
+            tags=list(og_tags), 
+            due_date=og_task.get_due_date(), 
+            duration=og_task.get_duration(), 
+            factor_urgency=og_task.get_urgency_val(), 
+            factor_ambition=og_task.get_ambition_val(), 
+            desc=og_task.desc
+            )
+        self._tasks[new_task.get_task_id()] = new_task
+        if save:
+            self.save_tasks()
 
-    def update_task_status(self, task_id, new_status):
+    def update_task_status(self, task_id, new_status, save=True):
         """
         Description:
             Updates the task status.
@@ -79,30 +122,40 @@ class TaskManager():
         """
         task = self.get_task(task_id)
         task.update_status(new_status)
+        if save:
+            self.save_tasks()
     #File Actions
     def save_tasks(self):
         tasks_to_save = {}
         for task_id, task in self._tasks.items():
             tasks_to_save[task_id] = task.conv_to_dict()
-        with open("tasks.json", "w") as file:
+        with open(self._filename, "w") as file:
             json.dump(tasks_to_save, file , indent=4)
     def load_tasks(self):
-        if not os.path.exists("tasks.json"):
+        if not os.path.exists(self._filename):
             print("No tasks were found")
             return
-        with open("tasks.json", "r") as file:
+        with open(self._filename, "r") as file:
             loaded_data = json.load(file)
             for task_id, task_data in loaded_data.items():
                 if task_id != task_data["task_id"]:
                     raise ValueError (f"Data corruption detected! Key does not match task ID")
                 name = task_data["name"]
-                tags = task_data["tags"]
                 due_date = task_data["due_date"]
                 duration = task_data["duration"]
+                tags = task_data["tags"]
                 factor_urgency = task_data["factor_urgency"]
                 factor_ambition = task_data["factor_ambition"]
                 desc = task_data["description"]
                 status = task_data["status"]
 
-                new_task = Task(name, tags, due_date, duration, factor_urgency, factor_ambition, desc, task_id, status)
+                new_task = Task(name=name, 
+                                due_date=due_date, 
+                                duration=duration, 
+                                tags=tags, 
+                                factor_urgency=factor_urgency, 
+                                factor_ambition=factor_ambition, 
+                                desc=desc, 
+                                task_id=task_id, 
+                                status=status)
                 self._tasks[task_id] = new_task

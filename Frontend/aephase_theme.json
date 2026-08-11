@@ -76,7 +76,7 @@
         "scrollbar_button_fg_color": "transparent",
         "scrollbar_button_color": ["#6B64C9", "#8A84E0"],
         "scrollbar_button_hover_color": ["#F5F5FF", "#5e5a96"],
-        "scrollbar_corner_radius": 6
+        "scrollbar_corner_radius": 1
     }
     
 }

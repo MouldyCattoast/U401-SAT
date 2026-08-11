@@ -14,10 +14,12 @@ class AephaseApp(ctk.CTk):
         ctk.set_appearance_mode("dark")
         self.title("Aephase")
         self.geometry("1000x600")
+        
         self.iconbitmap("assets/aephase_logo.png") 
         self.create_primary_view()
         self.create_sidebar()
         self.create_pages()
+        self.task_manager = TaskManager()
         
     def create_primary_view(self):
         self.grid_columnconfigure(1, weight=1)
@@ -233,16 +235,30 @@ class AephaseApp(ctk.CTk):
                 size=20,
                 weight="bold",
                 ),
-            command=lambda: TaskPopup(self)
+            command=lambda: TaskPopup(self, self.handle_task_save)
             )
         self.add_task_button.pack(pady=10)
         self.tasks_scrollable_frame = ctk.CTkScrollableFrame(self.tasks_frame, fg_color="transparent")
         self.tasks_scrollable_frame.pack( padx=5, pady=5, fill="both", expand=True)
         self.tasks_scrollable_frame.grid_columnconfigure(0, weight=1)
-        dummy_task = Task("meow" ,"changes","2025-11-22", 450, 3, 5, "nothing")
+        dummy_task = Task("meow" ,"2025-11-22", 450,"changes", 3, 5, "nothing")
         dummy_card= TaskCard(parent_frame=self.tasks_scrollable_frame, task_obj=dummy_task)
         dummy_card.grid(row=0, column=0, sticky="ew", padx=10, pady=10)
         dummy_card.grid_columnconfigure(0, weight=1)
+    def handle_task_save(
+            self,
+            name,
+            due_date,
+            duration,
+            desc
+    ):#Will add more fields in futur
+        self.task_manager.add_task(
+            name=name, 
+            due_date=due_date, 
+            duration=duration, 
+            desc=desc
+        )
+        print(f"Task Saved! Name: {name}, Due Date: {due_date}, Duration: {duration}, Description ={desc} ")
     def create_recovery_page(self):
         self.recovery_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.recovery_frame.grid(row=0, column=0, sticky="nsew")

@@ -1,3 +1,3 @@
 class UserProfile():
     def __init__(self, equilibrium_score, current_factor_ratings, target_goals, historical_data_log, decay_severity):
-        pass
+        ...
