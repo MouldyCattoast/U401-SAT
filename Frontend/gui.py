@@ -8,18 +8,19 @@ from .popups import TaskPopup
 
 class AephaseApp(ctk.CTk):
     def __init__(self):
+        self.task_manager = TaskManager()
         super().__init__()
         ctk.ThemeManager.load_theme("frontend/aephase_theme.json")
         ctk.set_default_color_theme("frontend/aephase_theme.json")
         ctk.set_appearance_mode("dark")
         self.title("Aephase")
         self.geometry("1000x600")
-        
         self.iconbitmap("assets/aephase_logo.png") 
         self.create_primary_view()
         self.create_sidebar()
         self.create_pages()
-        self.task_manager = TaskManager()
+        self.refresh_task_list()
+        
         
     def create_primary_view(self):
         self.grid_columnconfigure(1, weight=1)
@@ -241,10 +242,21 @@ class AephaseApp(ctk.CTk):
         self.tasks_scrollable_frame = ctk.CTkScrollableFrame(self.tasks_frame, fg_color="transparent")
         self.tasks_scrollable_frame.pack( padx=5, pady=5, fill="both", expand=True)
         self.tasks_scrollable_frame.grid_columnconfigure(0, weight=1)
-        dummy_task = Task("meow" ,"2025-11-22", 450,"changes", 3, 5, "nothing")
+        """dummy_task = Task("meow" ,"2025-11-22", 450,"changes", 3, 5, "nothing")
         dummy_card= TaskCard(parent_frame=self.tasks_scrollable_frame, task_obj=dummy_task)
         dummy_card.grid(row=0, column=0, sticky="ew", padx=10, pady=10)
-        dummy_card.grid_columnconfigure(0, weight=1)
+        dummy_card.grid_columnconfigure(0, weight=1)"""
+    def refresh_task_list(self):
+        for widget in self.tasks_scrollable_frame.winfo_children():
+            widget.destroy()
+        all_tasks = self.task_manager.get_all_tasks()
+        for index, task in enumerate(all_tasks):
+            card = TaskCard(
+                parent_frame=self.tasks_scrollable_frame,
+                task_obj=task
+                )
+            card.grid(row=index, column=0, sticky="ew", padx=10, pady=10)
+            card.grid_columnconfigure(0, weight=1)
     def handle_task_save(
             self,
             name,
@@ -258,6 +270,7 @@ class AephaseApp(ctk.CTk):
             duration=duration, 
             desc=desc
         )
+        self.refresh_task_list()
         print(f"Task Saved! Name: {name}, Due Date: {due_date}, Duration: {duration}, Description ={desc} ")
     def create_recovery_page(self):
         self.recovery_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
