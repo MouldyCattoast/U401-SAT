@@ -4,6 +4,7 @@ from backend import Task
 from backend import TaskManager
 from PIL import Image
 from .components import TaskCard
+from .popups import TaskPopup
 
 class AephaseApp(ctk.CTk):
     def __init__(self):
@@ -222,6 +223,19 @@ class AephaseApp(ctk.CTk):
                 weight="bold"
                 )
             ).pack()
+        self.add_task_button = ctk.CTkButton(
+            self.tasks_frame, 
+            text = "+ Add Task",
+            width=200,
+            height=40,
+            font=ctk.CTkFont(
+                family="Poppins",
+                size=20,
+                weight="bold",
+                ),
+            command=lambda: TaskPopup(self)
+            )
+        self.add_task_button.pack(pady=10)
         self.tasks_scrollable_frame = ctk.CTkScrollableFrame(self.tasks_frame, fg_color="transparent")
         self.tasks_scrollable_frame.pack( padx=5, pady=5, fill="both", expand=True)
         self.tasks_scrollable_frame.grid_columnconfigure(0, weight=1)
