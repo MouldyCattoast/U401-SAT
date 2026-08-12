@@ -197,12 +197,20 @@ class AephaseApp(ctk.CTk):
         self.dashboard_frame.grid(row=0, column=0, sticky="nsew")
         ctk.CTkLabel(
             self.dashboard_frame, 
-            text="Dashboard (Work In Progress)", 
+            text="Welcome to Aephase", 
             font=ctk.CTkFont(
-                size=24, 
+                family="Poppins",
+                size=40, 
                 weight="bold"
                 )
-            ).pack()
+            ).pack(pady=(250,50), anchor="center")
+        ctk.CTkLabel(
+                    self.dashboard_frame, 
+                    text="Get started by going to the 'Tasks' page and adding a task", 
+                    font=ctk.CTkFont(
+                        size=20, 
+                        )
+                    ).pack(pady=(0, 10), anchor="center")
     def create_profile_page(self):
         self.profile_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.profile_frame.grid(row=0, column=0, sticky="nsew")
@@ -213,12 +221,12 @@ class AephaseApp(ctk.CTk):
                 size=24, 
                 weight="bold"
                 )
-            ).pack()
+            ).pack(expand=True)
     def create_tasks_page(self):
         self.tasks_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.tasks_frame.grid(row=0, column=0, sticky="nsew")
         self.task_page_heading = ctk.CTkLabel(
-            self.tasks_frame, 
+            self.tasks_frame,
             text="Tasks", 
             font=ctk.CTkFont(
                 family="Poppins",
@@ -339,7 +347,7 @@ class AephaseApp(ctk.CTk):
                 size=24, 
                 weight="bold"
                 )
-            ).pack()
+            ).pack(expand=True)
     def create_routines_page(self):
         self.routines_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.routines_frame.grid(row=0, column=0, sticky="nsew")
@@ -350,7 +358,7 @@ class AephaseApp(ctk.CTk):
                 size=24, 
                 weight="bold"
                 )
-            ).pack()
+            ).pack(expand=True)
     def create_focus_page(self):
         self.focus_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.focus_frame.grid(row=0, column=0, sticky="nsew")
@@ -361,7 +369,7 @@ class AephaseApp(ctk.CTk):
                 size=24, 
                 weight="bold"
                 )
-            ).pack()
+            ).pack(expand=True)
     def create_recollection_page(self):
             self.recollection_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
             self.recollection_frame.grid(row=0, column=0, sticky="nsew")
@@ -372,7 +380,7 @@ class AephaseApp(ctk.CTk):
                     size=24, 
                     weight="bold"
                     ),
-                ).pack()
+                ).pack(expand=True)
     def create_settings_page(self):
         self.settings_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.settings_frame.grid(row=0, column=0, sticky="nsew")
@@ -383,7 +391,7 @@ class AephaseApp(ctk.CTk):
                 size=24, 
                 weight="bold"
                 ),
-            ).pack()
+            ).pack(expand=True)
         
 
     def show_dashboard(self):
