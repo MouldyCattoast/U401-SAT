@@ -2,11 +2,12 @@ import customtkinter as ctk
 from datetime import datetime
 
 class TaskPopup(ctk.CTkToplevel):
-    def __init__(self, master, on_save_callback):
-    
+    def __init__(self, master, on_save_callback, task_obj=None):
         super().__init__(master)
-        self.title("Add Task")
+        
+        self.task_obj=task_obj
         self.on_save_callback=on_save_callback
+        self.title("Add Task")
         self.name_entry = ctk.CTkEntry(self, placeholder_text="Name", width=120)
         self.name_entry.pack(padx=20, pady=10)
         self.due_date_entry = ctk.CTkEntry(self, placeholder_text="Due Date: YYYY-MM-DD", width=180)
@@ -25,7 +26,20 @@ class TaskPopup(ctk.CTkToplevel):
         self.error_label.pack(pady=5)
         self.save_button = ctk.CTkButton(self, text = "Save", command = lambda: self.handle_save_click())
         self.save_button.pack(padx=20, pady=10)
+        
         self.grab_set()
+
+    def set_task_data(self, task_obj):
+        self.title("Modify Task")
+        if task_obj.name:
+            self.name_entry.insert(0, str(task_obj.name))
+        if task_obj.get_due_date():
+            self.due_date_entry.insert(0, str(task_obj.get_due_date()))
+        if task_obj.get_duration():
+            self.duration_entry.insert(0, str(task_obj.get_duration()))
+        if task_obj.desc:
+            self.desc_textbox.delete("1.0", "end")
+            self.desc_textbox.insert("1.0", str(task_obj.desc))
 
     def handle_save_click(self):
         self.error_label.configure(text="")

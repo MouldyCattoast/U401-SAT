@@ -250,7 +250,8 @@ class AephaseApp(ctk.CTk):
             card = TaskCard(
                 parent_frame=self.tasks_scrollable_frame,
                 task_obj=task,
-                on_delete_callback=self.handle_task_deletion
+                on_delete_callback=self.handle_task_deletion,
+                on_modify_callback=self.handle_task_modification
                 )
             card.grid(row=index, column=0, sticky="ew", padx=10, pady=10)
             card.grid_columnconfigure(0, weight=1)
@@ -261,7 +262,7 @@ class AephaseApp(ctk.CTk):
             due_date,
             duration,
             desc
-    ):#Will add more fields in futur
+    ):#Will add more fields in future
         self.task_manager.add_task(
             name=name, 
             due_date=due_date, 
@@ -280,6 +281,23 @@ class AephaseApp(ctk.CTk):
             on_confirm_callback=confirm_deletion,
             title="Delete Task"
         )
+    def handle_task_modification(self, task_obj):
+        def save_modifications(
+            name, 
+            due_date, 
+            duration, 
+            desc
+            ):
+            task_obj.name = name       
+            task_obj.update_due_date(due_date)
+            task_obj.update_duration(duration)
+            task_obj.desc = desc
+            self.refresh_task_list()
+        modification_popup = TaskPopup(
+            master=self, 
+            on_save_callback=save_modifications)
+        modification_popup.set_task_data(task_obj)
+
 
     def create_recovery_page(self):
         self.recovery_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")

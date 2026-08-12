@@ -13,10 +13,11 @@ class TaskCard(ctk.CTkFrame):
             parent_frame(ctk.CTkFrame): This represents the frame that the task card is located in
             task_obj(Task): The specific task the card is showing
     """
-    def __init__(self, parent_frame: ctk.CTkFrame, task_obj: Task, on_delete_callback=None):
+    def __init__(self, parent_frame: ctk.CTkFrame, task_obj: Task, on_delete_callback=None, on_modify_callback=None):
         super().__init__(parent_frame)
         self.task_obj = task_obj
         self.on_delete_callback = on_delete_callback
+        self.on_modify_callback = on_modify_callback
         self.name_label = ctk.CTkLabel(self, text = str(self.task_obj.name), font = ctk.CTkFont("Inter", 25, "bold"))
         self.name_label.grid(row=0, column=0, sticky="nw", padx=10, pady=10)
         self.due_date_label = ctk.CTkLabel(self, text = f"Due: {str(self.task_obj._due_date)}")
@@ -52,7 +53,7 @@ class TaskCard(ctk.CTkFrame):
             self, 
             image=self.ctk_icon_edit, 
             text="Modify", 
-            command=lambda: print(f"Modifying {self.task_obj.name}"), 
+            command=self.handle_modify_click, 
             anchor="w", 
             width=95, 
             height=35
@@ -61,3 +62,6 @@ class TaskCard(ctk.CTkFrame):
     def handle_delete_click(self):
         if self.on_delete_callback:
             self.on_delete_callback(self.task_obj)
+    def handle_modify_click(self):
+        if self.on_modify_callback:
+            self.on_modify_callback(self.task_obj)
