@@ -13,20 +13,51 @@ class TaskCard(ctk.CTkFrame):
             parent_frame(ctk.CTkFrame): This represents the frame that the task card is located in
             task_obj(Task): The specific task the card is showing
     """
-    def __init__(self, parent_frame: ctk.CTkFrame, task_obj: Task):
+    def __init__(self, parent_frame: ctk.CTkFrame, task_obj: Task, on_delete_callback=None):
         super().__init__(parent_frame)
         self.task_obj = task_obj
-        self.name_label = ctk.CTkLabel(self, text = str(self.task_obj.name), font = ctk.CTkFont("Inter", 20, "bold"))
+        self.on_delete_callback = on_delete_callback
+        self.name_label = ctk.CTkLabel(self, text = str(self.task_obj.name), font = ctk.CTkFont("Inter", 25, "bold"))
         self.name_label.grid(row=0, column=0, sticky="nw", padx=10, pady=10)
         self.due_date_label = ctk.CTkLabel(self, text = f"Due: {str(self.task_obj._due_date)}")
         self.due_date_label.grid(row=2, column=0, sticky = "sw", padx=10, pady=10)
-        self.duration_label= ctk.CTkLabel(self, text = f"Total Duration: {str(self.task_obj._duration)} Minutes")
+
+        if self.task_obj._duration:
+            self.duration_label= ctk.CTkLabel(self, text = f"Total Duration: {str(self.task_obj._duration)} Minutes")
+        else:
+            self.duration_label= ctk.CTkLabel(self, text = f"Total Duration: {str(self.task_obj._duration)}")
         self.duration_label.grid(row=1, column=0,sticky="sw", padx=10, pady=10)
+        self.icon_delete_dark = Image.open("assets/icons/dark/delete_dark.png")
+        self.icon_delete_light = Image.open("assets/icons/light/delete_light.png")
+        self.ctk_icon_delete = ctk.CTkImage(
+                    light_image=self.icon_delete_light, 
+                    dark_image=self.icon_delete_dark
+                            )
+        self.delete_button = ctk.CTkButton(
+            self, 
+            image=self.ctk_icon_delete, 
+            text="", 
+            command = self.handle_delete_click, 
+            width=10,
+            height=40, 
+            fg_color="transparent")
+        self.delete_button.grid(row=0, column=1, sticky = "ne", padx=10, pady=10)
         self.icon_edit_dark = Image.open("assets/icons/dark/edit_dark.png")
         self.icon_edit_light = Image.open("assets/icons/light/edit_light.png")
         self.ctk_icon_edit = ctk.CTkImage(
             light_image=self.icon_edit_light, 
             dark_image=self.icon_edit_dark
                     )
-        self.configure_button = ctk.CTkButton(self, image=self.ctk_icon_edit, text="Configure", command=lambda: print(f"Configuring {self.task_obj.name}"), anchor="w")
-        self.configure_button.grid(row=2, column=1, sticky = "se", padx=10, pady=10)
+        self.modify_button = ctk.CTkButton(
+            self, 
+            image=self.ctk_icon_edit, 
+            text="Modify", 
+            command=lambda: print(f"Modifying {self.task_obj.name}"), 
+            anchor="w", 
+            width=95, 
+            height=35
+            )
+        self.modify_button.grid(row=2, column=1, sticky = "se", padx=10, pady=10)
+    def handle_delete_click(self):
+        if self.on_delete_callback:
+            self.on_delete_callback(self.task_obj)

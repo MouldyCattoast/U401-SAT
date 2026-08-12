@@ -2,11 +2,11 @@ import customtkinter as ctk
 from datetime import datetime
 
 class TaskPopup(ctk.CTkToplevel):
-    def __init__(self, master, on_save):
+    def __init__(self, master, on_save_callback):
     
         super().__init__(master)
         self.title("Add Task")
-        self.on_save=on_save
+        self.on_save_callback=on_save_callback
         self.name_entry = ctk.CTkEntry(self, placeholder_text="Name", width=120)
         self.name_entry.pack(padx=20, pady=10)
         self.due_date_entry = ctk.CTkEntry(self, placeholder_text="Due Date: YYYY-MM-DD", width=180)
@@ -36,15 +36,15 @@ class TaskPopup(ctk.CTkToplevel):
         if not name:
             self.error_label.configure(text="Error: Task Name is required")
             return
-        duration = None
-
+        
         if duration:
             try:
                 duration = int(duration)
-            except ValueError:
+            except (TypeError, ValueError):
                 self.error_label.configure(
-                    text=f"Error:Duration must be a whole number"
+                    text=f"Error: Duration must be a whole number"
                 )
+                return
             if duration<=0:
                 self.error_label.configure(
                     text=f"Error: Duration must be greater than 0"
@@ -60,6 +60,6 @@ class TaskPopup(ctk.CTkToplevel):
                 return
         if not desc:
             desc = None
-        if self.on_save:
-            self.on_save(name=name,due_date=due_date,duration=duration, desc=desc)
+        if self.on_save_callback:
+            self.on_save_callback(name=name,due_date=due_date,duration=duration, desc=desc)
         self.destroy()
