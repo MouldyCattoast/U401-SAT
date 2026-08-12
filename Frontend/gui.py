@@ -4,7 +4,7 @@ from backend import Task
 from backend import TaskManager
 from PIL import Image
 from .components import TaskCard
-from .popups import TaskPopup
+from .popups import TaskPopup, ConfirmationPopup
 
 class AephaseApp(ctk.CTk):
     def __init__(self):
@@ -271,8 +271,15 @@ class AephaseApp(ctk.CTk):
         self.refresh_task_list()
         print(f"Task Saved! Name: {name}, Due Date: {due_date}, Duration: {duration}, Description ={desc} ")
     def handle_task_deletion(self, task_obj):
-        self.task_manager.remove_task(task_obj)
-        self.refresh_task_list()
+        def confirm_deletion():
+            self.task_manager.remove_task(task_obj)
+            self.refresh_task_list()
+        ConfirmationPopup(
+            master=self,
+            message=f"Are you sure you would like to delete the task '{task_obj.name}'?",
+            on_confirm_callback=confirm_deletion,
+            title="Delete Task"
+        )
 
     def create_recovery_page(self):
         self.recovery_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")

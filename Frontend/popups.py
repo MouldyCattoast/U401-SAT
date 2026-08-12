@@ -63,3 +63,52 @@ class TaskPopup(ctk.CTkToplevel):
         if self.on_save_callback:
             self.on_save_callback(name=name,due_date=due_date,duration=duration, desc=desc)
         self.destroy()
+
+
+class ConfirmationPopup(ctk.CTkToplevel):
+    def __init__(self, master, message, on_confirm_callback, title="Confirm Action"):
+        super().__init__(master)
+        self.title(title)
+        
+        self.on_confirm_callback = on_confirm_callback
+        self.grab_set()
+
+        self.message_label = ctk.CTkLabel(
+            self, 
+            text=message, 
+            wraplength=300, 
+            font=ctk.CTkFont(
+                "Inter",
+                20,
+                "bold"
+            )
+                                          )
+        self.message_label.pack(padx=20, pady=20)
+
+        buttons_frame = ctk.CTkFrame(self, fg_color="transparent")
+        buttons_frame.pack(side="bottom", fill="x", padx=20, pady=20)
+
+        self.cancel_button = ctk.CTkButton(
+            buttons_frame,
+            text="Cancel",
+            width=100,
+            fg_color="gray",
+            hover_color="#555555",
+            command=self.destroy
+        )
+        self.cancel_button.pack(side="left")
+
+        self.confirm_button = ctk.CTkButton(
+            buttons_frame, 
+            text="Confirm", 
+            width=100, 
+            fg_color="#B87D6E", 
+            hover_color="#965D50",
+            command=self.handle_confirm_click
+        )
+        self.confirm_button.pack(side="right")
+
+    def handle_confirm_click(self):
+        if self.on_confirm_callback:
+            self.on_confirm_callback()
+        self.destroy()
