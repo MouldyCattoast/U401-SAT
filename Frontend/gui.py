@@ -217,15 +217,27 @@ class AephaseApp(ctk.CTk):
     def create_tasks_page(self):
         self.tasks_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.tasks_frame.grid(row=0, column=0, sticky="nsew")
-        ctk.CTkLabel(
+        self.task_page_heading = ctk.CTkLabel(
             self.tasks_frame, 
-            text="Tasks (Work In Progress)", 
+            text="Tasks", 
             font=ctk.CTkFont(
                 family="Poppins",
-                size=30, 
+                size=40, 
                 weight="bold"
                 )
-            ).pack()
+            )
+        self.task_page_heading.pack(pady=35)
+        self.search_entry = ctk.CTkEntry(
+            self.tasks_frame,
+            placeholder_text="Search Tasks",
+            height=45,
+            font= ctk.CTkFont(
+                size=25,
+                weight="bold"
+            )
+        )
+        self.search_entry.pack(padx=20, pady=10, fill="x")
+        self.search_entry.bind("<KeyRelease>", self.on_search_changed)
         self.add_task_button = ctk.CTkButton(
             self.tasks_frame, 
             text = "+ Add Task",
@@ -242,11 +254,29 @@ class AephaseApp(ctk.CTk):
         self.tasks_scrollable_frame = ctk.CTkScrollableFrame(self.tasks_frame, fg_color="transparent")
         self.tasks_scrollable_frame.pack( padx=5, pady=5, fill="both", expand=True)
         self.tasks_scrollable_frame.grid_columnconfigure(0, weight=1)
+    def on_search_changed(self, *args):
+        self.refresh_task_list()
     def refresh_task_list(self):
         for widget in self.tasks_scrollable_frame.winfo_children():
             widget.destroy()
         all_tasks = self.task_manager.get_all_tasks()
-        for index, task in enumerate(all_tasks):
+        search_query = self.search_entry.get().strip().lower() if hasattr(self, "search_entry") else ""
+        if search_query:
+            filtered_tasks = [task for task in all_tasks if search_query in str(task.name).lower()]
+        else:
+            filtered_tasks = all_tasks
+        if not filtered_tasks:
+            empty_label = ctk.CTkLabel(
+                self.tasks_scrollable_frame,
+                text="No tasks found",
+                text_color="gray",
+                font= ctk.CTkFont(
+                    size=30
+                ),
+            )
+            empty_label.grid(row=0, column=0, pady=40)
+            return
+        for index, task in enumerate(filtered_tasks):
             card = TaskCard(
                 parent_frame=self.tasks_scrollable_frame,
                 task_obj=task,
