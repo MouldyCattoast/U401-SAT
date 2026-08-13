@@ -1,3 +1,17 @@
+# ==============================================================================
+# @file:        task_manager.py
+# @author:      mouldycattoast
+# ==============================================================================
+"""
+This module provides the TaskManager class, 
+which manages the entire collection of tasks while the program is running.
+
+It has the capability to add, remove and duplicate tasks, 
+but does not have the capibility to modify individual tasks
+
+It also is responsible for writing task information to the tasks.json file so it can be stored throughout sessions
+"""
+
 import json
 from datetime import datetime
 import os
@@ -126,12 +140,21 @@ class TaskManager():
             self.save_tasks()
     #File Actions
     def save_tasks(self):
+        """
+        Description:
+            Converts all objects of class Task into dictionaries, and writes them to tasks.json
+        """
         tasks_to_save = {}
         for task_id, task in self._tasks.items():
             tasks_to_save[task_id] = task.conv_to_dict()
         with open(self._filename, "w") as file:
             json.dump(tasks_to_save, file , indent=4)
+
     def load_tasks(self):
+        """
+        Description:
+            Reads tasks.json and converts all stored objects and their listed attributes into objects of class Task
+        """
         if not os.path.exists(self._filename):
             print("No tasks were found")
             return

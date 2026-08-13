@@ -1,3 +1,11 @@
+# ==============================================================================
+# @file:        Main.py
+# @author:      mouldycattoast
+# ==============================================================================
+"""
+This is the main file, which activates the Graphical User Interface
+"""
+
 import customtkinter
 import json
 import uuid

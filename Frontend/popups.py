@@ -1,7 +1,24 @@
+# ==============================================================================
+# @file:        popups.py
+# @author:      mouldycattoast
+# ==============================================================================
+"""
+This module provides all of the GUI popup windows that are used for the application
+"""
+
 import customtkinter as ctk
 from datetime import datetime
 
 class TaskPopup(ctk.CTkToplevel):
+    """
+        Popup which displays and allows the user to edit all the user determined attributes of a specific Task
+    
+        Attributes:
+            Instance Attributes:
+                master: Window the app is launched from
+                on_save_callback: Callback used by GUI to record and save information from the popup
+                task_obj: Task intended to be modified (if modifying a task)
+    """
     def __init__(self, master, on_save_callback, task_obj=None):
         super().__init__(master)
         
@@ -30,6 +47,12 @@ class TaskPopup(ctk.CTkToplevel):
         self.grab_set()
 
     def set_task_data(self, task_obj):
+        """
+        Parameters:
+            task_obj(Task): Task which the data has been obtained frm
+        Description:
+            Automatically prefills the popup with the associated task's information
+        """
         self.title("Modify Task")
         if task_obj.name:
             self.name_entry.insert(0, str(task_obj.name))
@@ -42,6 +65,18 @@ class TaskPopup(ctk.CTkToplevel):
             self.desc_textbox.insert("1.0", str(task_obj.desc))
 
     def handle_save_click(self):
+        """
+        Description:
+            Handler that is run when clicking the save button
+
+            Collects the the inputs of all the fields,
+            Checks whether all fields have valid inputs, 
+            formats the inputs, and sends them to the primary GUI window, 
+            which then sends it to the backend for processing
+        Justifications:
+            - All inputs are stripped to remove any unnecessary spaces
+            - Date must be in YYYY-MM-DD format to comply with the backend processing            
+        """
         self.error_label.configure(text="")
         name = self.name_entry.get().strip()
         due_date = self.due_date_entry.get().strip()
@@ -80,6 +115,16 @@ class TaskPopup(ctk.CTkToplevel):
 
 
 class ConfirmationPopup(ctk.CTkToplevel):
+
+    """
+        Popup which appears to allow users to confirm their action
+        Attributes:
+            master: Window in which the popup was launched from
+            message: Message being displayed by the popup
+            on_confirm_callback: Callback used to register the option which the user has selected
+            title: Window header title
+            
+    """
     def __init__(self, master, message, on_confirm_callback, title="Confirm Action"):
         super().__init__(master)
         self.title(title)
@@ -123,6 +168,12 @@ class ConfirmationPopup(ctk.CTkToplevel):
         self.confirm_button.pack(side="right")
 
     def handle_confirm_click(self):
+        """
+        Description:
+            Handler that is run when clicking the confirm button
+
+            Sends a callback, which allows the item which launched it to continue with its intended task     
+        """
         if self.on_confirm_callback:
             self.on_confirm_callback()
         self.destroy()

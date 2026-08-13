@@ -1,3 +1,13 @@
+# ==============================================================================
+# @file:        gui.py
+# @author:      mouldycattoast
+# ==============================================================================
+"""
+This module houses the primary GUI of the application
+
+This is where the screens are primarily constructed, creating the main window of the application
+"""
+
 import customtkinter as ctk
 import tkinter as tk
 from backend import Task
@@ -7,6 +17,9 @@ from .components import TaskCard
 from .popups import TaskPopup, ConfirmationPopup
 
 class AephaseApp(ctk.CTk):
+    """
+        Main app window
+    """
     def __init__(self):
         self.task_manager = TaskManager()
         super().__init__()
@@ -23,6 +36,10 @@ class AephaseApp(ctk.CTk):
         
         
     def create_primary_view(self):
+        """
+        Description:
+            Constructs the activity area on the right of the window            
+        """
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)  
         self.main_frame=ctk.CTkFrame(self, fg_color="#1A1A2E")
@@ -31,6 +48,10 @@ class AephaseApp(ctk.CTk):
         self.main_frame.grid_rowconfigure(0, weight=1) 
                 
     def create_sidebar(self):
+        """
+        Description:
+            Constructs the sidebar containing all the navigation items on the left of the screen        
+        """
         #Sidebar Setup
         self.sidebar = ctk.CTkFrame(self, width=200, corner_radius=0)
         self.sidebar.grid(row=0, column=0, sticky="nsew")
@@ -172,6 +193,12 @@ class AephaseApp(ctk.CTk):
             )
         self.btn_settings.grid(row=6, column=0, padx=20, pady=10, sticky="ew")
     def create_pages(self):
+        """
+        Description:
+            Runs the all the functions, to initially create all of the pages
+        Justifications:
+            The init code looks neater like this     
+        """
         self.create_dashboard_page()
         self.create_profile_page()
         self.create_tasks_page()
@@ -183,6 +210,12 @@ class AephaseApp(ctk.CTk):
         self.hide_all_pages()
         self.show_dashboard()
     def hide_all_pages(self):
+        """
+        Description:
+            The pages have been created, but they shouldn't be visible to the user until the users requires them
+        Justifications:
+            The init code looks neater like this     
+        """
         self.dashboard_frame.grid_remove()
         self.profile_frame.grid_remove()
         self.tasks_frame.grid_remove()
@@ -193,6 +226,10 @@ class AephaseApp(ctk.CTk):
         self.settings_frame.grid_remove()
 
     def create_dashboard_page(self):
+        """
+        Description:
+            Creates the dashboard page and all of its relevant contents   
+        """
         self.dashboard_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.dashboard_frame.grid(row=0, column=0, sticky="nsew")
         ctk.CTkLabel(
@@ -212,6 +249,10 @@ class AephaseApp(ctk.CTk):
                         )
                     ).pack(pady=(0, 10), anchor="center")
     def create_profile_page(self):
+        """
+        Description:
+            Creates the profile page and all of its relevant contents   
+        """
         self.profile_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.profile_frame.grid(row=0, column=0, sticky="nsew")
         ctk.CTkLabel(
@@ -223,6 +264,10 @@ class AephaseApp(ctk.CTk):
                 )
             ).pack(expand=True)
     def create_tasks_page(self):
+        """
+        Description:
+            Creates the tasks page and all of its relevant contents   
+        """
         self.tasks_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.tasks_frame.grid(row=0, column=0, sticky="nsew")
         self.task_page_heading = ctk.CTkLabel(
@@ -256,19 +301,31 @@ class AephaseApp(ctk.CTk):
                 size=20,
                 weight="bold",
                 ),
-            command=lambda: TaskPopup(self, self.handle_task_save)
+            command=lambda: TaskPopup(self, self.handle_task_add)
             )
         self.add_task_button.pack(pady=10)
         self.tasks_scrollable_frame = ctk.CTkScrollableFrame(self.tasks_frame, fg_color="transparent")
         self.tasks_scrollable_frame.pack( padx=5, pady=5, fill="both", expand=True)
         self.tasks_scrollable_frame.grid_columnconfigure(0, weight=1)
     def on_search_changed(self, *args):
+        """
+        Description:
+            Activates when a key is typed into the searchbar, and causes a refresh of the list of tasks
+        """
         self.refresh_task_list()
     def refresh_task_list(self):
+        """
+        Description:
+            Refreshes the contents of the main scrollable list of tasks
+        """
+        #_______________________________________________________________________________________________
+        #Collects any text input from within the search bar, as the function is called whenever a key is pressed, to refresh the list
         for widget in self.tasks_scrollable_frame.winfo_children():
             widget.destroy()
         all_tasks = self.task_manager.get_all_tasks()
         search_query = self.search_entry.get().strip().lower() if hasattr(self, "search_entry") else ""
+        #_______________________________________________________________________________________________
+
         if search_query:
             filtered_tasks = [task for task in all_tasks if search_query in str(task.name).lower()]
         else:
@@ -294,13 +351,18 @@ class AephaseApp(ctk.CTk):
             card.grid(row=index, column=0, sticky="ew", padx=10, pady=10)
             card.grid_columnconfigure(0, weight=1)
 
-    def handle_task_save(
+    def handle_task_add(
             self,
             name,
             due_date,
             duration,
             desc
     ):#Will add more fields in future
+        
+        """
+        Description:
+            Adds the relevant task to the task manager and refreshes the visible list of tasks to display it
+        """
         self.task_manager.add_task(
             name=name, 
             due_date=due_date, 
@@ -308,9 +370,18 @@ class AephaseApp(ctk.CTk):
             desc=desc
         )
         self.refresh_task_list()
-        print(f"Task Saved! Name: {name}, Due Date: {due_date}, Duration: {duration}, Description ={desc} ")
     def handle_task_deletion(self, task_obj):
+        """
+        Description:
+            Executed when the delete button is pressed, 
+            and launches a popup, when confirmed, 
+            the inputted task will be deleted
+        """
         def confirm_deletion():
+            """
+            Description:
+                Removes the selected task when the confirm button on the popup is pressed
+            """
             self.task_manager.remove_task(task_obj)
             self.refresh_task_list()
         ConfirmationPopup(
@@ -320,16 +391,26 @@ class AephaseApp(ctk.CTk):
             title="Delete Task"
         )
     def handle_task_modification(self, task_obj):
+        """
+        Description:
+            When the user would like to save their modification, 
+            this allows them to save the modification to the backend
+        """
         def save_modifications(
             name, 
             due_date, 
             duration, 
             desc
             ):
+            """
+            Description:
+                Updates the backend's modification of the task and refreshes the list of tasks
+            """
             task_obj.name = name       
             task_obj.update_due_date(due_date)
             task_obj.update_duration(duration)
             task_obj.desc = desc
+            self.task_manager.save_tasks()
             self.refresh_task_list()
         modification_popup = TaskPopup(
             master=self, 
@@ -338,6 +419,10 @@ class AephaseApp(ctk.CTk):
 
 
     def create_recovery_page(self):
+        """
+        Description:
+            Creates the recovery page and all of its relevant contents   
+        """
         self.recovery_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.recovery_frame.grid(row=0, column=0, sticky="nsew")
         ctk.CTkLabel(
@@ -349,6 +434,10 @@ class AephaseApp(ctk.CTk):
                 )
             ).pack(expand=True)
     def create_routines_page(self):
+        """
+        Description:
+            Creates the routines page and all of its relevant contents   
+        """
         self.routines_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.routines_frame.grid(row=0, column=0, sticky="nsew")
         ctk.CTkLabel(
@@ -360,6 +449,10 @@ class AephaseApp(ctk.CTk):
                 )
             ).pack(expand=True)
     def create_focus_page(self):
+        """
+        Description:
+            Creates the focus page and all of its relevant contents   
+        """
         self.focus_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.focus_frame.grid(row=0, column=0, sticky="nsew")
         ctk.CTkLabel(
@@ -371,6 +464,10 @@ class AephaseApp(ctk.CTk):
                 )
             ).pack(expand=True)
     def create_recollection_page(self):
+            """
+            Description:
+                Creates the recollection page and all of its relevant contents   
+            """
             self.recollection_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
             self.recollection_frame.grid(row=0, column=0, sticky="nsew")
             ctk.CTkLabel(
@@ -382,6 +479,10 @@ class AephaseApp(ctk.CTk):
                     ),
                 ).pack(expand=True)
     def create_settings_page(self):
+        """
+        Description:
+            Creates the settings page and all of its relevant contents   
+        """
         self.settings_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.settings_frame.grid(row=0, column=0, sticky="nsew")
         ctk.CTkLabel(
@@ -395,20 +496,36 @@ class AephaseApp(ctk.CTk):
         
 
     def show_dashboard(self):
+        """
+        Description:
+            Switches the current GUI content to be the dashboard page
+        """
         self.hide_all_pages()
         self.reset_button_colours()
         self.dashboard_frame.grid(row=0, column=0, sticky="nsew")
     def show_profile(self):
+        """
+        Description:
+            Switches the current GUI content to be the profile page
+        """
         self.hide_all_pages()
         self.reset_button_colours()
         self.btn_profile.configure(fg_color="#5e5a96")
         self.profile_frame.grid(row=0, column=0, sticky="nsew")
     def show_tasks(self):
+        """
+        Description:
+            Switches the current GUI content to be the tasks page
+        """
         self.hide_all_pages()
         self.reset_button_colours()
         self.btn_tasks.configure(fg_color="#5e5a96")
         self.tasks_frame.grid(row=0, column=0, sticky="nsew")
     def show_routines(self):
+        """
+        Description:
+            Switches the current GUI content to be the routines page
+        """
         self.hide_all_pages()
         self.reset_button_colours()
         self.btn_routines.configure(fg_color="#5e5a96")
@@ -416,26 +533,46 @@ class AephaseApp(ctk.CTk):
 
 
     def show_recovery(self):
+        """
+        Description:
+            Switches the current GUI content to be the reovery page
+        """
         self.hide_all_pages()
         self.reset_button_colours()
         self.btn_recovery.configure(fg_color="#5e5a96")
         self.recovery_frame.grid(row=0, column=0, sticky="nsew")
     def show_focus(self):
+        """
+        Description:
+            Switches the current GUI content to be the focus page
+        """
         self.hide_all_pages()
         self.reset_button_colours()
         self.btn_focus.configure(fg_color="#5e5a96")
         self.focus_frame.grid(row=0, column=0, sticky="nsew")
     def show_recollection(self):
+        """
+        Description:
+            Switches the current GUI content to be the recollection page
+        """
         self.hide_all_pages()
         self.reset_button_colours()
         self.btn_recollection.configure(fg_color="#5e5a96")
         self.recollection_frame.grid(row=0, column=0, sticky="nsew")
     def show_settings(self):
+        """
+        Description:
+            Switches the current GUI content to be the settings page
+        """
         self.hide_all_pages()
         self.reset_button_colours()
         self.btn_settings.configure(fg_color="#5e5a96")
         self.settings_frame.grid(row=0, column=0, sticky="nsew")
     def reset_button_colours(self):
+        """
+        Description:
+            Resets the colour of buttons to be the original unclicked colour
+        """
         self.btn_profile.configure(fg_color="#8A84E0")
         self.btn_tasks.configure(fg_color="#8A84E0")
         self.btn_routines.configure(fg_color="#8A84E0")

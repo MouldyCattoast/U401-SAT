@@ -1,9 +1,23 @@
+# ==============================================================================
+# @file:        task.py
+# @author:      mouldycattoast
+# ==============================================================================
+"""
+This module provides the Task class, 
+which serves as a template for the data that a task may store
+
+It has the capability to modify the attributes of the corresponding task,
+and it also is able to write itself into a dictionary format,
+so that it can be stored in a json file
+"""
+
 import uuid
 from datetime import datetime
 
 
 class Task():
-    """Represents the template for what defines a task, all of the details of a task
+    """
+    Represents the template for what defines a task, all of the details of a task
 
     Attributes:
         Class Attributes:

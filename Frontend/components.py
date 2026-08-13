@@ -1,3 +1,10 @@
+# ==============================================================================
+# @file:        components.py
+# @author:      mouldycattoast
+# ==============================================================================
+"""
+This module provides any custom-made GUI elements that can be used throughout the application
+"""
 
 import customtkinter as ctk
 from backend import Task
@@ -5,7 +12,7 @@ from PIL import Image
 
 class TaskCard(ctk.CTkFrame):
     """
-    Description: Visual template based on a frame, deesigned with the ui elemts required for a task overview while searching for tasks
+    Description: Visual template based on a frame, designed with the ui elemts required for a task overview while searching for tasks
 
     Attributes:
         Class Attributes:
@@ -60,8 +67,22 @@ class TaskCard(ctk.CTkFrame):
             )
         self.modify_button.grid(row=2, column=1, sticky = "se", padx=10, pady=10)
     def handle_delete_click(self):
+        """
+            Description:
+                Handler that is run when clicking the delete button
+    
+                Notifies the GUI, to destroy the task card, 
+                which notifies the backend to remove the attached task from the storage
+        """
         if self.on_delete_callback:
             self.on_delete_callback(self.task_obj)
     def handle_modify_click(self):
+        """
+        Description:
+            Handler that is run when clicking the modify button
+
+            Signals to the GUI to launch the modification popup,
+            then collects the information provided after it is finished        
+        """
         if self.on_modify_callback:
             self.on_modify_callback(self.task_obj)
